@@ -5,11 +5,34 @@ import { Input, Checkbox, Button } from '@heroui/react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import GoogleLogo from '@/assets/icons/GoogleLogo';
 import Link from 'next/link';
+import { useForm, Controller } from 'react-hook-form';
+import { useParams } from 'next/navigation';
+
+interface ILoginForm {
+  email: string;
+  password: string;
+}
 
 export default function LoginForm() {
+  const { lang } = useParams();
   const [isVisible, setIsVisible] = useState(false);
-
   const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ILoginForm>({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    mode: 'onChange',
+  });
+
+  const onSubmit = (data: ILoginForm) => {
+    console.log('Login data:', data);
+  };
 
   return (
     <div className="w-full max-w-md space-y-6">
@@ -18,23 +41,61 @@ export default function LoginForm() {
         <p className="mt-2 text-gray-600">Bienvenido a Vaova Hotels</p>
       </div>
 
-      <form className="mt-8 space-y-6">
+      <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-4">
-          <Input id="email" type="email" placeholder="email@example.com" />
+          <Controller
+            name="email"
+            control={control}
+            rules={{
+              required: { value: true, message: 'Email es requerido' },
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: 'Email no válido',
+              },
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                id="email"
+                label="Email"
+                type="email"
+                placeholder="email@example.com"
+                isInvalid={!!errors.email}
+              />
+            )}
+          />
 
-          <Input
-            id="password"
-            type={isVisible ? 'text' : 'password'}
-            placeholder="Enter your password"
-            endContent={
-              <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
-                {isVisible ? (
-                  <EyeIcon className="h-4 w-4 text-gray-500" />
-                ) : (
-                  <EyeOffIcon className="h-4 w-4 text-gray-500" />
-                )}
-              </button>
-            }
+          <Controller
+            name="password"
+            control={control}
+            rules={{
+              required: { value: true, message: 'Password es requerido' },
+              minLength: { value: 6, message: 'Mínimo 6 caracteres' },
+              maxLength: { value: 20, message: 'Máximo 20 caracteres' },
+              pattern: {
+                value: /^(?=.*[a-zñ])(?=.*[A-ZÑ])(?=.*\d)(?=.*[@$!%*?&#.])[A-Za-zñÑ\d@$!%*?&#.-]{8,}$/,
+                message: 'Password debe tener al menos una mayúscula, una minúscula, un número y un carácter especial',
+              },
+            }}
+            render={({ field }) => (
+              <Input
+                {...field}
+                id="password"
+                label="Password"
+                type={isVisible ? 'text' : 'password'}
+                placeholder="Contraseña"
+                isInvalid={!!errors.password}
+                endContent={
+                  <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                    {isVisible ? (
+                      <EyeIcon className="h-4 w-4 text-gray-500" />
+                    ) : (
+                      <EyeOffIcon className="h-4 w-4 text-gray-500" />
+                    )}
+                  </button>
+                }
+              />
+            )}
           />
         </div>
 
@@ -53,7 +114,7 @@ export default function LoginForm() {
         </div>
 
         <div className="w-full">
-          <Button type="submit" color="primary" fullWidth size="lg">
+          <Button type="submit" color="primary" fullWidth size="lg" disabled={isSubmitting}>
             Iniciar sesión
           </Button>
         </div>
@@ -85,7 +146,7 @@ export default function LoginForm() {
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
           No tienes una cuenta?{' '}
-          <Link href="#" className="font-medium text-primary hover:text-primary/80">
+          <Link href={`/${lang}/auth/register`} className="font-medium text-primary hover:text-primary/80">
             Registrate
           </Link>
         </p>

@@ -20,11 +20,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+  params: { lang },
+}: {
   children: React.ReactNode;
-}>) {
+  params: { lang: string };
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>{children}</Providers>
       </body>

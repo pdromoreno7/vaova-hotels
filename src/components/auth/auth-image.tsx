@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-export default function LoginImage() {
+export default function AuthImage() {
   return (
     <div className="relative hidden w-1/2 flex-1 lg:block">
       <Image
