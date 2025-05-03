@@ -1,44 +1,83 @@
 'use client';
 
 import { useState } from 'react';
-import { Input, Checkbox, Button } from '@heroui/react';
+import { Input, Button, Select, SelectItem } from '@heroui/react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import GoogleLogo from '@/assets/icons/GoogleLogo';
 import Link from 'next/link';
 import { useForm, Controller } from 'react-hook-form';
 import { useParams } from 'next/navigation';
+import { registerWithEmailAndPassword, signInWithGoogle } from '@/services/auth';
+import { toast } from 'sonner';
 
 interface IRegisterForm {
   name: string;
   email: string;
   password: string;
+  role: 'admin' | 'user';
 }
 
 export default function RegisterForm() {
   const { lang } = useParams();
   const [isVisible, setIsVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<IRegisterForm>({
     defaultValues: {
       name: '',
       email: '',
       password: '',
+      role: 'user',
     },
     mode: 'onChange',
   });
 
-  const onSubmit = (data: IRegisterForm) => {
-    console.log('Register data:', data);
+  const onSubmit = async (data: IRegisterForm) => {
+    try {
+      setLoading(true);
+      const result = await registerWithEmailAndPassword(data);
+      if (result.success) {
+        toast.success('Usuario registrado exitosamente');
+        console.log('Usuario registrado exitosamente:', result.user);
+      } else {
+        toast.error('Error al registrar usuario');
+        console.error('Error al registrar usuario:', result.error);
+      }
+    } catch (error) {
+      toast.error('Error en el registro');
+      console.error('Error en el registro:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true);
+      const result = await signInWithGoogle();
+      if (result.success) {
+        toast.success('Usuario registrado con Google exitosamente');
+        console.log('Usuario registrado con Google exitosamente:', result.user);
+      } else {
+        toast.error('Error al registrar con Google');
+        console.error('Error al registrar con Google:', result.error);
+      }
+    } catch (error) {
+      toast.error('Error en el registro con Google');
+      console.error('Error en el registro con Google:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="w-full max-w-md space-y-6">
-      <div className="flex flex-col  w-full">
+      <div className="flex flex-col w-full">
         <h2 className="mt-2 text-3xl font-bold">Registro</h2>
         <p className="mt-2 text-gray-600">Crea tu cuenta en Vaova Hotels</p>
       </div>
@@ -99,65 +138,68 @@ export default function RegisterForm() {
                 placeholder="Contraseña"
                 isInvalid={!!errors.password}
                 endContent={
-                  <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                  <button type="button" onClick={toggleVisibility}>
                     {isVisible ? (
-                      <EyeIcon className="h-4 w-4 text-gray-500" />
+                      <EyeOffIcon className="text-2xl text-default-400 pointer-events-none" />
                     ) : (
-                      <EyeOffIcon className="h-4 w-4 text-gray-500" />
+                      <EyeIcon className="text-2xl text-default-400 pointer-events-none" />
                     )}
                   </button>
                 }
               />
             )}
           />
+          <Controller
+            name="role"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                label="Rol"
+                placeholder="Selecciona un rol"
+                className="w-full"
+                isInvalid={!!errors.role}
+              >
+                <SelectItem key="user">Usuario</SelectItem>
+                <SelectItem key="admin">Administrador</SelectItem>
+              </Select>
+            )}
+          />
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Checkbox id="terms" size="sm">
-              <span className="text-sm">Acepto los términos y condiciones</span>
-            </Checkbox>
-          </div>
-        </div>
-
-        <div className="w-full">
-          <Button type="submit" color="primary" fullWidth size="lg" disabled={isSubmitting}>
+        <div className="flex flex-col gap-4">
+          <Button type="submit" color="primary" isLoading={loading} size="lg">
             Registrarse
           </Button>
-        </div>
-
-        <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-gray-500">O registrarse con</span>
+              <span className="bg-white px-2 text-gray-500">O continuar con</span>
             </div>
           </div>
-
-          <div className="mt-6  gap-3">
-            <Button
-              size="lg"
-              type="button"
-              fullWidth
-              className="flex items-center justify-center gap-2  border border-gray-300 bg-black p-3 text-white hover:bg-gray-900"
-            >
-              <GoogleLogo className="h-5 w-5" />
-              <span>Registrarse con Google</span>
-            </Button>
-          </div>
+          <Button
+            type="button"
+            onPress={handleGoogleSignIn}
+            isLoading={loading}
+            fullWidth
+            className="flex items-center justify-center gap-2  border border-gray-300 bg-black p-3 text-white hover:bg-gray-900"
+            size="lg"
+          >
+            <GoogleLogo className="h-5 w-5" />
+            <span>Iniciar con Google</span>
+          </Button>
         </div>
       </form>
 
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600">
-          ¿Ya tienes una cuenta?{' '}
-          <Link href={`/${lang}/auth/login`} className="font-medium text-primary hover:text-primary/80">
-            Inicia sesión
-          </Link>
-        </p>
-      </div>
+      <p className="text-center text-sm text-gray-600">
+        ¿Ya tienes una cuenta?{' '}
+        <Link href={`/${lang}/auth/login`} className="font-semibold text-primary hover:underline">
+          Inicia sesión
+        </Link>
+      </p>
     </div>
   );
 }
