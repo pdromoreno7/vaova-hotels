@@ -7,6 +7,7 @@ import GoogleLogo from '@/assets/icons/GoogleLogo';
 import Link from 'next/link';
 import { useForm, Controller } from 'react-hook-form';
 import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { registerWithEmailAndPassword, signInWithGoogle } from '@/services/auth';
 import { toast } from 'sonner';
 
@@ -19,6 +20,7 @@ interface IRegisterForm {
 
 export default function RegisterForm() {
   const { lang } = useParams();
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -44,6 +46,7 @@ export default function RegisterForm() {
       if (result.success) {
         toast.success('Usuario registrado exitosamente');
         console.log('Usuario registrado exitosamente:', result.user);
+        router.push(`/${lang}/dashboard`); // Redirigir al dashboard con el idioma
       } else {
         toast.error('Error al registrar usuario');
         console.error('Error al registrar usuario:', result.error);
@@ -63,6 +66,7 @@ export default function RegisterForm() {
       if (result.success) {
         toast.success('Usuario registrado con Google exitosamente');
         console.log('Usuario registrado con Google exitosamente:', result.user);
+        router.push(`/${lang}/dashboard`); // Redirigir al dashboard con el idioma
       } else {
         toast.error('Error al registrar con Google');
         console.error('Error al registrar con Google:', result.error);
