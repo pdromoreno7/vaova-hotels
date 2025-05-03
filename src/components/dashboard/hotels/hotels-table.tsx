@@ -15,6 +15,7 @@ import {
   Tooltip,
   Button,
 } from '@heroui/react';
+import HotelFormModal from './hotel-form-modal';
 
 // Definición de tipos
 type Hotel = {
@@ -71,6 +72,8 @@ export default function HotelsTable() {
     },
   ]);
 
+  const [isModalOpen, setModalOpen] = useState(false);
+
   const renderCell = (hotel: Hotel, columnKey: string) => {
     const cellValue = hotel[columnKey as keyof Hotel];
 
@@ -126,8 +129,7 @@ export default function HotelsTable() {
     <div className="w-full  mx-auto   ">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-semibold">Lista de Hoteles</h1>
-        <Button color="primary">
-          {' '}
+        <Button color="primary" onClick={() => setModalOpen(true)}>
           <Plus />
           Agregar Hotel
         </Button>
@@ -147,6 +149,7 @@ export default function HotelsTable() {
           )}
         </TableBody>
       </Table>
+      <HotelFormModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 }
