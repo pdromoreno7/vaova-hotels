@@ -9,7 +9,7 @@ const cardData = [
   { icon: <DollarSign />, label: 'Ingresos Totales', value: '$45,890' },
 ];
 
-export default function HotelCardsInfo() {
+export default function CardsInfo() {
   return (
     <div className="flex gap-4 justify-center w-full">
       {cardData.map((card, index) => (

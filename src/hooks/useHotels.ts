@@ -1,36 +1,41 @@
 import { useQuery } from '@tanstack/react-query';
-import { getHotelsByUserId } from '@/services/hotel';
+import { getHotelsByUserId, getAllHotels } from '@/services/hotel';
 import { useSession } from './useSession';
 import { Hotel } from '@/interface/hotels.interface';
 
 /**
- * Hook para consultar los hoteles del usuario actual
+ * Hook para consultar hoteles
+ * @param queryType - Tipo de consulta: 'user' para obtener hoteles del usuario actual, 'all' para todos los hoteles
  */
-export const useHotels = () => {
+export const useHotels = (queryType: 'user' | 'all' = 'user') => {
   const { session, isAuthenticated } = useSession();
-  
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    refetch
-  } = useQuery({
-    queryKey: ['hotels', session?.id],
+
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    // La clave de consulta depende del tipo de consulta
+    queryKey: queryType === 'user' ? ['hotels', 'user', session?.id] : ['hotels', 'all'],
     queryFn: async () => {
-      if (!session?.id) {
+      // Si buscamos hoteles del usuario pero no hay sesión, devolver array vacío
+      if (queryType === 'user' && !session?.id) {
         return [];
       }
-      
-      const result = await getHotelsByUserId(session.id);
+
+      let result;
+      if (queryType === 'user') {
+        // Obtener hoteles del usuario
+        result = await getHotelsByUserId(session!.id);
+      } else {
+        // Obtener todos los hoteles
+        result = await getAllHotels();
+      }
+
       if (result.success) {
         return result.data || [];
       }
-      
-      throw new Error(result.error as string || 'Error al cargar hoteles');
+
+      throw new Error((result.error as string) || 'Error al cargar hoteles');
     },
-    // Solo ejecutar la consulta si hay una sesión activa
-    enabled: isAuthenticated && !!session?.id,
+    // La consulta está habilitada según el tipo
+    enabled: queryType === 'all' || (isAuthenticated && !!session?.id),
   });
 
   return {
@@ -39,6 +44,6 @@ export const useHotels = () => {
     isError,
     error,
     refetch,
-    isAuthenticated
+    isAuthenticated,
   };
 };

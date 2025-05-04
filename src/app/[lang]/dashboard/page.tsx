@@ -1,6 +1,6 @@
 'use client';
 import HotelsTable from '@/components/dashboard/hotels/hotels-table';
-import HotelCardsInfo from '@/components/dashboard/hotels/hotel-cards-info';
+import CardsInfo from '@/components/dashboard/hotels/cards-info';
 import HotelsTableFilter from '@/components/dashboard/hotels/hotels-table-filter';
 import Wrapper from '@/layouts/Wrapper';
 import { useSession } from '@/hooks/useSession';
@@ -42,7 +42,7 @@ function DashboardPage() {
           }`}</p>
           <p className="text-gray-500 mt-2">Gestiona tus propiedades y convenios de manera eficiente</p>
         </div>
-        <HotelCardsInfo />
+        <CardsInfo />
         <div className="flex gap-6 mt-6">
           <div className="w-1/4">
             <HotelsTableFilter />
