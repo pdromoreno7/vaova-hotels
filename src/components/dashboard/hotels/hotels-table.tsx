@@ -17,6 +17,7 @@ import {
   Spinner,
 } from '@heroui/react';
 import HotelFormModal from './hotel-form-modal';
+import HotelDeleteModal from './hotel-delete-modal';
 import { useHotels } from '@/hooks/useHotels';
 import { Hotel as HotelType } from '@/interface/hotels.interface';
 
@@ -31,6 +32,13 @@ export default function HotelsTable() {
   
   // Hook para manejar el modal de edición
   const [editHotelId, setEditHotelId] = useState<string | null>(null);
+  
+  // Estado para manejar el modal de eliminación
+  const [deleteModalState, setDeleteModalState] = useState({
+    isOpen: false,
+    hotelId: undefined as string | undefined,
+    hotelName: undefined as string | undefined
+  });
 
   // Función para actualizar los hoteles después de crear o editar uno
   const handleHotelCreated = () => {
@@ -45,6 +53,24 @@ export default function HotelsTable() {
   // Función para cerrar el modal de edición
   const handleCloseEditModal = () => {
     setEditHotelId(null);
+  };
+  
+  // Función para abrir el modal de eliminación
+  const handleDeleteHotel = (hotel: HotelType) => {
+    setDeleteModalState({ 
+      isOpen: true, 
+      hotelId: hotel.id,
+      hotelName: hotel.name
+    });
+  };
+  
+  // Función para cerrar el modal de eliminación
+  const handleCloseDeleteModal = () => {
+    setDeleteModalState({ 
+      isOpen: false, 
+      hotelId: undefined,
+      hotelName: undefined
+    });
   };
 
   return (
@@ -134,7 +160,7 @@ export default function HotelsTable() {
                         size="sm"
                         variant="light"
                         color="danger"
-                        onPress={() => console.log('Eliminar', hotel.id)}
+                        onPress={() => handleDeleteHotel(hotel)}
                       >
                         <Trash2 size={16} />
                       </Button>
@@ -155,6 +181,15 @@ export default function HotelsTable() {
         onClose={handleCloseEditModal} 
         onSuccess={handleHotelCreated}
         hotelId={editHotelId || undefined}
+      />
+      
+      {/* Modal para eliminar un hotel */}
+      <HotelDeleteModal
+        isOpen={deleteModalState.isOpen}
+        onClose={handleCloseDeleteModal}
+        onSuccess={handleHotelCreated}
+        hotelId={deleteModalState.hotelId}
+        hotelName={deleteModalState.hotelName}
       />
     </div>
   );
