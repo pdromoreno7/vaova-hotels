@@ -65,7 +65,7 @@ function Header() {
 
             <div className="flex items-center space-x-4">
               {!isDashboard && (
-                <Button as={Link} href={`/${lang}/dashboard`}>
+                <Button color="primary" as={Link} href={`/${lang}/dashboard`}>
                   Dashboard
                 </Button>
               )}
@@ -101,7 +101,7 @@ function Header() {
             {isAuthenticated ? (
               <>
                 {!isDashboard && (
-                  <Button as={Link} href={`/${lang}/dashboard`} className="w-full" onPress={toggleMenu}>
+                  <Button color="primary" as={Link} href={`/${lang}/dashboard`} className="w-full" onPress={toggleMenu}>
                     Dashboard
                   </Button>
                 )}

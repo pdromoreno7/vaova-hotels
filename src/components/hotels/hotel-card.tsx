@@ -1,34 +1,33 @@
 'use client';
-import { Avatar, Card, CardBody, Chip } from '@heroui/react';
+import { Avatar, Card, CardBody, Chip, Badge } from '@heroui/react';
 
 import Image from 'next/image';
-import { MapPin, StarIcon } from 'lucide-react';
-
-// Tipo para los datos del hotel
-interface Hotel {
-  id: string;
-  name: string;
-  location: string;
-  rating: number;
-  status: 'activo' | 'inactivo';
-  imageUrl: string;
-}
+import { MapPin, StarIcon, DollarSign } from 'lucide-react';
+import { Hotel } from '@/interface/hotels.interface';
 
 export default function HotelCard({ hotel }: { hotel: Hotel }) {
+  // Crear la ubicación combinando ciudad, estado y país
+  const location = `${hotel.city}, ${hotel.state}, ${hotel.country}`;
+
+  // Obtener la URL de la primera imagen de la galería o usar logo si no hay galería
+  const imageUrl = hotel.gallery && hotel.gallery.length > 0 ? hotel.gallery[0].url : hotel.logo || '/placeholder.svg';
+
+  // Determinar si el hotel está activo o inactivo
+  const status = hotel.active ? 'activo' : 'inactivo';
+
+  // Obtener el precio de la habitación singleRoom
+  const singleRoomPrice = hotel.rooms.singleRoom.price;
+
   return (
     <Card>
       <div className="relative h-64 w-full">
-        <Image
-          src={hotel.imageUrl || '/placeholder.svg'}
-          alt={hotel.name}
-          className="object-cover w-full h-full"
-          width={500}
-          height={500}
-        />
+        <Image src={imageUrl} alt={hotel.name} className="object-cover w-full h-full" width={500} height={500} />
+
         {/* Avatar superpuesto en la esquina superior derecha */}
         <div className="absolute top-3 right-3">
           <Avatar
-            src={`https://i.pravatar.cc/150?u=${hotel.id}`}
+            src={hotel.logo}
+            fallback={hotel.name.substring(0, 2).toUpperCase()}
             className="w-12 h-12 text-tiny border-2 border-white"
             isBordered
             color="default"
@@ -38,30 +37,43 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
 
       <CardBody className="p-5">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-2xl font-bold">{hotel.name}</h2>
+          <h2 className="text-xl font-bold">{hotel.name}</h2>
           <Chip
-            color={hotel.status === 'activo' ? 'default' : 'default'}
-            variant={hotel.status === 'activo' ? 'solid' : 'bordered'}
+            color={status === 'activo' ? 'success' : 'danger'}
+            variant={status === 'activo' ? 'solid' : 'bordered'}
             radius="full"
             size="sm"
-            className={`capitalize ${hotel.status === 'activo' ? 'bg-black text-white' : 'bg-gray-200 text-gray-700'}`}
+            className="capitalize"
           >
-            {hotel.status}
+            {status}
           </Chip>
         </div>
+
         <p className="text-gray-500 mt-1 flex items-center gap-2">
-          {' '}
-          <MapPin size={16} /> {hotel.location}
+          <MapPin size={16} /> {location}
         </p>
 
-        <div className="flex mt-3">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <StarIcon
-              key={i}
-              className={`w-5 h-5 ${i < hotel.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-            />
-          ))}
+        <div className="flex justify-between items-center mt-4">
+          <div className="flex">
+            {/* Mostrar estrellas según la categoría del hotel (3, 4 o 5) */}
+            {Array.from({ length: 5 }).map((_, i) => (
+              <StarIcon
+                key={i}
+                className={`w-5 h-5 ${i < hotel.category ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+              />
+            ))}
+          </div>
+
+          {/* Precio de habitación singleRoom */}
+          <div className="flex items-center gap-1 text-green-600 font-semibold">
+            <DollarSign size={16} />
+            <span>{singleRoomPrice.toLocaleString('es-CO')}</span>
+            <span className="text-xs text-gray-500">/noche</span>
+          </div>
         </div>
+
+        {/* Descripción corta */}
+        <p className="text-sm text-gray-500 mt-3 line-clamp-2">{hotel.description}</p>
       </CardBody>
     </Card>
   );
