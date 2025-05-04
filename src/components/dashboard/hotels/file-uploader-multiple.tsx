@@ -109,7 +109,6 @@ const FileUploaderMultiple = ({ onFilesChange }: FileUploaderMultipleProps) => {
                 <Button color="danger" onPress={handleRemoveAllFiles} size="sm">
                   Remover todas las imágenes
                 </Button>
-                {/* <Button size="sm">Upload Files</Button> */}
               </div>
             </Fragment>
           ) : (

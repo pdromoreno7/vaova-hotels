@@ -208,6 +208,24 @@ export const getHotelById = async (hotelId: string): Promise<{ success: boolean;
 };
 
 /**
+ * Obtiene los hoteles creados por un usuario específico
+ */
+export const getHotelsByUserId = async (userId: string): Promise<{ success: boolean; data?: Hotel[]; error?: unknown }> => {
+  try {
+    const hotelsRef = collection(db, HOTELS_COLLECTION);
+    const q = query(hotelsRef, where('createdBy', '==', userId));
+    const querySnapshot = await getDocs(q);
+    
+    const hotels = querySnapshot.docs.map(doc => doc.data() as Hotel);
+    
+    return { success: true, data: hotels };
+  } catch (error) {
+    console.error('Error al obtener hoteles del usuario:', error);
+    return { success: false, error };
+  }
+};
+
+/**
  * Elimina un hotel de Firestore
  */
 export const deleteHotel = async (hotelId: string): Promise<{ success: boolean; error?: unknown }> => {

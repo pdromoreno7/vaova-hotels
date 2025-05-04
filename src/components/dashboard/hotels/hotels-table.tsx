@@ -14,142 +14,149 @@ import {
   Chip,
   Tooltip,
   Button,
+  Spinner,
 } from '@heroui/react';
 import HotelFormModal from './hotel-form-modal';
+import { useHotels } from '@/hooks/useHotels';
+import { Hotel as HotelType } from '@/interface/hotels.interface';
 
-// Definición de tipos
-type Hotel = {
-  id: string;
-  name: string;
-  location: string;
-  rating: number;
-  status: 'Activo' | 'En revisión';
-  image: string;
-};
-
-const columns = [
-  { name: 'Hotel', uid: 'name' },
-  { name: 'Ubicación', uid: 'location' },
-  { name: 'Calificación', uid: 'rating' },
-  { name: 'Estado', uid: 'status' },
-  { name: 'Acciones', uid: 'actions' },
-];
-
-const statusColorMap = {
-  Activo: 'primary',
-  'En revisión': 'warning',
-};
+// Usamos colores de HeroUI directamente en los componentes
 
 export default function HotelsTable() {
-  // Datos de ejemplo
-  const [hotels, setHotels] = useState<Hotel[]>([
-    {
-      id: '1',
-      name: 'Hotel Costa Azul',
-      location: 'Cartagena',
-      rating: 4.8,
-      status: 'Activo',
-      image:
-        'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    },
-    {
-      id: '2',
-      name: 'Gran Hotel Dorado',
-      location: 'Medellín',
-      rating: 4.5,
-      status: 'Activo',
-      image:
-        'https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    },
-    {
-      id: '3',
-      name: 'Hotel Montaña Verde',
-      location: 'Bogotá',
-      rating: 4.7,
-      status: 'En revisión',
-      image:
-        'https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    },
-  ]);
+  // Usar el hook personalizado para obtener los hoteles del usuario
+  const { hotels, isLoading, isError, error, refetch } = useHotels();
 
-  const [isModalOpen, setModalOpen] = useState(false);
+  // Hook para manejar el modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const renderCell = (hotel: Hotel, columnKey: string) => {
-    const cellValue = hotel[columnKey as keyof Hotel];
-
-    switch (columnKey) {
-      case 'name':
-        return <User avatarProps={{ radius: 'lg', src: hotel.image }} name={cellValue} />;
-      case 'location':
-        return (
-          <div className="flex items-center">
-            <MapPin className="w-4 h-4 text-gray-400" />
-            <span>{cellValue}</span>
-          </div>
-        );
-      case 'rating':
-        return (
-          <div className="flex items-center">
-            <Star className="w-4 h-4 text-yellow-400" />
-            <span>{cellValue}</span>
-          </div>
-        );
-      case 'status':
-        return (
-          <Chip color={statusColorMap[cellValue]} size="sm">
-            {cellValue}
-          </Chip>
-        );
-      case 'actions':
-        return (
-          <div className="flex gap-2">
-            <Tooltip content="Editar">
-              <button className="p-1.5 rounded-md hover:bg-gray-100">
-                <Edit2 className="w-4 h-4 text-gray-500" />
-              </button>
-            </Tooltip>
-            <Tooltip content="Ver">
-              <button className="p-1.5 rounded-md hover:bg-gray-100">
-                <Eye className="w-4 h-4 text-gray-500" />
-              </button>
-            </Tooltip>
-            <Tooltip content="Eliminar">
-              <button className="p-1.5 rounded-md hover:bg-gray-100">
-                <Trash2 className="w-4 h-4 text-gray-500" />
-              </button>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
+  // Función para actualizar los hoteles después de crear uno nuevo
+  const handleHotelCreated = () => {
+    refetch();
   };
 
   return (
-    <div className="w-full  mx-auto   ">
+    <div className="shadow-md rounded-xl bg-white p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-semibold">Lista de Hoteles</h1>
-        <Button color="primary" onClick={() => setModalOpen(true)}>
-          <Plus />
-          Agregar Hotel
+        <h2 className="text-xl font-bold text-gray-800">Hoteles</h2>
+        <Button
+          color="primary"
+          size="sm"
+          onClick={() => setIsModalOpen(true)}
+          endContent={<Plus size={16} />}
+        >
+          Nuevo Hotel
         </Button>
       </div>
 
-      <Table aria-label="Tabla de hoteles">
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.uid} align={column.uid === 'actions' ? 'center' : 'start'}>
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={hotels}>
-          {(item) => (
-            <TableRow key={item.id}>{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}</TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <HotelFormModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      {/* Mostrar cargador mientras se obtienen los datos */}
+      {isLoading && (
+        <div className="flex justify-center items-center py-10">
+          <Spinner size="lg" />
+        </div>
+      )}
+
+      {/* Mostrar mensaje de error si hay algún problema */}
+      {isError && (
+        <div className="text-center py-10 text-red-500">
+          Error al cargar los hoteles: {error instanceof Error ? error.message : 'Error desconocido'}
+        </div>
+      )}
+
+      {/* Mostrar mensaje si no hay hoteles */}
+      {!isLoading && !isError && hotels.length === 0 && (
+        <div className="text-center py-10 text-gray-500">
+          No has creado ningún hotel todavía. ¡Crea tu primer hotel con el botón &quot;Nuevo Hotel&quot;!
+        </div>
+      )}
+
+      {!isLoading && !isError && hotels.length > 0 && (
+        <Table aria-label="Tabla de hoteles">
+          <TableHeader>
+            <TableColumn>Hotel</TableColumn>
+            <TableColumn>Ubicación</TableColumn>
+            <TableColumn>Categoría</TableColumn>
+            <TableColumn>Estado</TableColumn>
+            <TableColumn align="center">Acciones</TableColumn>
+          </TableHeader>
+          <TableBody>
+            {hotels.map((hotel: HotelType) => (
+              <TableRow key={hotel.id}>
+                <TableCell>
+                  <User
+                    name={hotel.name}
+                    avatarProps={{
+                      src: hotel.logo || 'https://via.placeholder.com/150',
+                      radius: 'lg',
+                    }}
+                    description={hotel.description ? hotel.description.substring(0, 30) + '...' : 'Hotel & Resort'}
+                  />
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center">
+                    <MapPin className="mr-2" size={16} />
+                    {`${hotel.city || ''}, ${hotel.state || ''}`}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center">
+                    <Star className="text-amber-500 mr-1" size={16} />
+                    {hotel.category || '-'} estrellas
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    color={hotel.active ? 'success' : 'danger'}
+                    size="sm"
+                    variant="flat"
+                  >
+                    {hotel.active ? 'Activo' : 'Inactivo'}
+                  </Chip>
+                </TableCell>
+                <TableCell>
+                  <div className="flex justify-center gap-2">
+                    <Tooltip content="Ver detalles">
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        onPress={() => console.log('Ver', hotel.id)}
+                      >
+                        <Eye size={16} />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Editar">
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        onPress={() => console.log('Editar', hotel.id)}
+                      >
+                        <Edit2 size={16} />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Eliminar" color="danger">
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        color="danger"
+                        onPress={() => console.log('Eliminar', hotel.id)}
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+      <HotelFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={handleHotelCreated}
+      />
     </div>
   );
 }
