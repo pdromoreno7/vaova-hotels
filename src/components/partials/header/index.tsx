@@ -8,6 +8,7 @@ import Wrapper from '@/layouts/Wrapper';
 import { useSession } from '@/hooks/useSession';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { LogoutModal } from '../Logout-modal';
+import VaovaHotelsLogo from '@/assets/brand/vaova-hotels-logo';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,7 +57,7 @@ function Header() {
             <div className="flex items-center gap-5 space-x-4">
               <Link href="/">
                 <div className="flex items-center pb-2">
-                  <h1>Vaova Hotels</h1>
+                  <VaovaHotelsLogo />
                 </div>
               </Link>
               <nav className="hidden items-center gap-2 md:flex md:gap-7"></nav>

@@ -85,19 +85,19 @@ export const loginWithGoogle = async () => {
     const user = userCredential.user;
 
     const userDoc = await getUserDocument(user.uid);
-    
+
     // Crear objeto userData con datos fusionados para asegurar que ID siempre existe
     // y que todos los campos requeridos por la interfaz User estén presentes
     const userData: User = {
       id: user.uid,
       email: user.email || '',
-      name: userDoc.success && userDoc.data?.name ? userDoc.data.name : (user.displayName || ''),
+      name: userDoc.success && userDoc.data?.name ? userDoc.data.name : user.displayName || '',
       role: userDoc.success && userDoc.data?.role ? userDoc.data.role : 'user',
       createdAt: userDoc.success && userDoc.data?.createdAt ? userDoc.data.createdAt : new Date(),
-      // Otros campos opcionales
-      ...(userDoc.success && userDoc.data ? userDoc.data : {})
+
+      ...(userDoc.success && userDoc.data ? userDoc.data : {}),
     };
-    
+
     saveUserSession(userData);
     return { success: true, user: userData };
   } catch (error) {
@@ -112,22 +112,21 @@ export const loginWithEmailAndPassword = async (email: string, password: string)
     const user = userCredential.user;
 
     const userDoc = await getUserDocument(user.uid);
-    
+
     // Crear objeto userData con datos fusionados para asegurar que ID siempre existe
     // y que todos los campos requeridos por la interfaz User estén presentes
     const userData: User = {
       id: user.uid,
       email: user.email || '',
-      name: userDoc.success && userDoc.data?.name ? userDoc.data.name : (user.displayName || email.split('@')[0]),
+      name: userDoc.success && userDoc.data?.name ? userDoc.data.name : user.displayName || email.split('@')[0],
       role: userDoc.success && userDoc.data?.role ? userDoc.data.role : 'user',
       createdAt: userDoc.success && userDoc.data?.createdAt ? userDoc.data.createdAt : new Date(),
       // Otros campos opcionales
-      ...(userDoc.success && userDoc.data ? userDoc.data : {})
+      ...(userDoc.success && userDoc.data ? userDoc.data : {}),
     };
-    
+
     saveUserSession(userData);
     return { success: true, user: userData };
-    
   } catch (error) {
     console.error('Error logging in with email and password:', error);
     return { success: false, error };

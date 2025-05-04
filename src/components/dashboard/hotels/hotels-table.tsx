@@ -26,24 +26,32 @@ export default function HotelsTable() {
   // Usar el hook personalizado para obtener los hoteles del usuario
   const { hotels, isLoading, isError, error, refetch } = useHotels();
 
-  // Hook para manejar el modal
+  // Hook para manejar el modal de creación
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Hook para manejar el modal de edición
+  const [editHotelId, setEditHotelId] = useState<string | null>(null);
 
-  // Función para actualizar los hoteles después de crear uno nuevo
+  // Función para actualizar los hoteles después de crear o editar uno
   const handleHotelCreated = () => {
     refetch();
+  };
+  
+  // Función para abrir el modal de edición
+  const handleEditHotel = (hotelId: string) => {
+    setEditHotelId(hotelId);
+  };
+  
+  // Función para cerrar el modal de edición
+  const handleCloseEditModal = () => {
+    setEditHotelId(null);
   };
 
   return (
     <div className="shadow-md rounded-xl bg-white p-4">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold text-gray-800">Hoteles</h2>
-        <Button
-          color="primary"
-          size="sm"
-          onClick={() => setIsModalOpen(true)}
-          endContent={<Plus size={16} />}
-        >
+        <Button color="primary" size="sm" onPress={() => setIsModalOpen(true)} endContent={<Plus size={16} />}>
           Nuevo Hotel
         </Button>
       </div>
@@ -104,33 +112,19 @@ export default function HotelsTable() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Chip
-                    color={hotel.active ? 'success' : 'danger'}
-                    size="sm"
-                    variant="flat"
-                  >
+                  <Chip color={hotel.active ? 'success' : 'danger'} size="sm" variant="flat">
                     {hotel.active ? 'Activo' : 'Inactivo'}
                   </Chip>
                 </TableCell>
                 <TableCell>
                   <div className="flex justify-center gap-2">
                     <Tooltip content="Ver detalles">
-                      <Button
-                        isIconOnly
-                        size="sm"
-                        variant="light"
-                        onPress={() => console.log('Ver', hotel.id)}
-                      >
+                      <Button isIconOnly size="sm" variant="light" onPress={() => console.log('Ver', hotel.id)}>
                         <Eye size={16} />
                       </Button>
                     </Tooltip>
                     <Tooltip content="Editar">
-                      <Button
-                        isIconOnly
-                        size="sm"
-                        variant="light"
-                        onPress={() => console.log('Editar', hotel.id)}
-                      >
+                      <Button isIconOnly size="sm" variant="light" onPress={() => handleEditHotel(hotel.id)}>
                         <Edit2 size={16} />
                       </Button>
                     </Tooltip>
@@ -152,10 +146,15 @@ export default function HotelsTable() {
           </TableBody>
         </Table>
       )}
-      <HotelFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+      {/* Modal para crear un nuevo hotel */}
+      <HotelFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleHotelCreated} />
+      
+      {/* Modal para editar un hotel existente */}
+      <HotelFormModal 
+        isOpen={!!editHotelId} 
+        onClose={handleCloseEditModal} 
         onSuccess={handleHotelCreated}
+        hotelId={editHotelId || undefined}
       />
     </div>
   );
