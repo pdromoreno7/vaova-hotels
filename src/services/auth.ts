@@ -7,6 +7,7 @@ import {
 import { auth } from '@/config/firabase';
 import { createUserDocument, getUserDocument } from './user';
 import { saveUserSession } from '@/lib/session';
+import { User } from '@/interface/user.interface';
 
 interface RegisterData {
   name: string;
@@ -50,11 +51,8 @@ export const registerWithGoogle = async () => {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    // Verificar si el usuario ya existe
     const existingUser = await getUserDocument(user.uid);
     if (!existingUser.success) {
-
-      // Si no existe, crear el documento
       const documentResult = await createUserDocument(user.uid, {
         name: user.displayName || '',
         email: user.email || '',
@@ -67,7 +65,6 @@ export const registerWithGoogle = async () => {
       }
     }
 
-    // Obtener y guardar los datos del usuario
     const userDoc = await getUserDocument(user.uid);
     if (userDoc.success && userDoc.data) {
       saveUserSession(userDoc.data);
@@ -84,16 +81,25 @@ export const registerWithGoogle = async () => {
 export const loginWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
+    const userCredential = await signInWithPopup(auth, provider);
+    const user = userCredential.user;
 
     const userDoc = await getUserDocument(user.uid);
-    if (userDoc.success && userDoc.data) {
-      saveUserSession(userDoc.data);
-      return { success: true, user: userDoc.data };
-    }
-
-    return { success: false, error: 'User data not found' };
+    
+    // Crear objeto userData con datos fusionados para asegurar que ID siempre existe
+    // y que todos los campos requeridos por la interfaz User estén presentes
+    const userData: User = {
+      id: user.uid,
+      email: user.email || '',
+      name: userDoc.success && userDoc.data?.name ? userDoc.data.name : (user.displayName || ''),
+      role: userDoc.success && userDoc.data?.role ? userDoc.data.role : 'user',
+      createdAt: userDoc.success && userDoc.data?.createdAt ? userDoc.data.createdAt : new Date(),
+      // Otros campos opcionales
+      ...(userDoc.success && userDoc.data ? userDoc.data : {})
+    };
+    
+    saveUserSession(userData);
+    return { success: true, user: userData };
   } catch (error) {
     console.error('Error with Google login:', error);
     return { success: false, error };
@@ -106,12 +112,22 @@ export const loginWithEmailAndPassword = async (email: string, password: string)
     const user = userCredential.user;
 
     const userDoc = await getUserDocument(user.uid);
-    if (userDoc.success && userDoc.data) {
-      saveUserSession(userDoc.data);
-      return { success: true, user: userDoc.data };
-    }
-
-    return { success: false, error: 'User data not found' };
+    
+    // Crear objeto userData con datos fusionados para asegurar que ID siempre existe
+    // y que todos los campos requeridos por la interfaz User estén presentes
+    const userData: User = {
+      id: user.uid,
+      email: user.email || '',
+      name: userDoc.success && userDoc.data?.name ? userDoc.data.name : (user.displayName || email.split('@')[0]),
+      role: userDoc.success && userDoc.data?.role ? userDoc.data.role : 'user',
+      createdAt: userDoc.success && userDoc.data?.createdAt ? userDoc.data.createdAt : new Date(),
+      // Otros campos opcionales
+      ...(userDoc.success && userDoc.data ? userDoc.data : {})
+    };
+    
+    saveUserSession(userData);
+    return { success: true, user: userData };
+    
   } catch (error) {
     console.error('Error logging in with email and password:', error);
     return { success: false, error };

@@ -6,7 +6,9 @@ export const getUserDocument = async (userId: string) => {
   try {
     const userDoc = await getDoc(doc(db, 'users', userId));
     if (userDoc.exists()) {
-      return { success: true, data: userDoc.data() as User };
+      const docData = userDoc.data() as User;
+      // Usa el spread primero y luego el id explícito para que este último tenga prioridad
+      return { success: true, data: { ...docData, id: userId } };
     }
     return { success: false, error: 'User document not found' };
   } catch (error) {

@@ -1,5 +1,5 @@
-// src/types/hotel.ts
 export interface RoomInventory {
+  enabled: boolean;
   available: number;
   price: number;
 }
@@ -23,6 +23,7 @@ export interface Hotel {
   state: string;
   city: string;
   logo: string;
+  active: boolean;
   category: 3 | 4 | 5;
   rating: number;
   rooms: Rooms;

@@ -33,24 +33,26 @@ function DashboardPage() {
   }
 
   return (
-    <Wrapper className="py-10">
-      <div className="mb-8 space-y-1">
-        <h1 className="text-3xl font-bold">Dashboard de Hoteles</h1>
-        <p className="text-lg text-gray-600 font-medium">{`¡Bienvenido${
-          session?.name ? `, ${session.name}!` : '!'
-        }`}</p>
-        <p className="text-gray-500 mt-2">Gestiona tus propiedades y convenios de manera eficiente</p>
-      </div>
-      <HotelCardsInfo />
-      <div className="flex gap-6 mt-6">
-        <div className="w-1/4">
-          <HotelsTableFilter />
+    <div className="bg-[#F9FAFB] min-h-screen">
+      <Wrapper className="py-10 ">
+        <div className="mb-8 space-y-1">
+          <h1 className="text-3xl font-bold">Dashboard de Hoteles</h1>
+          <p className="text-lg text-gray-600 font-medium">{`¡Bienvenido${
+            session?.name ? `, ${session.name}!` : '!'
+          }`}</p>
+          <p className="text-gray-500 mt-2">Gestiona tus propiedades y convenios de manera eficiente</p>
         </div>
-        <div className="w-3/4">
-          <HotelsTable />
+        <HotelCardsInfo />
+        <div className="flex gap-6 mt-6">
+          <div className="w-1/4">
+            <HotelsTableFilter />
+          </div>
+          <div className="w-3/4">
+            <HotelsTable />
+          </div>
         </div>
-      </div>
-    </Wrapper>
+      </Wrapper>
+    </div>
   );
 }
 

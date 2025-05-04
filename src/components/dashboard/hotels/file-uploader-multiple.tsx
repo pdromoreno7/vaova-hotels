@@ -2,17 +2,26 @@
 import { Icon } from '@iconify/react';
 import { Upload } from 'lucide-react';
 import Image from 'next/image';
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { Button } from '@heroui/react';
 
-interface FileWithPreview extends File {
+export interface FileWithPreview extends File {
   preview: string;
 }
 
-const FileUploaderMultiple = () => {
+interface FileUploaderMultipleProps {
+  onFilesChange: (files: FileWithPreview[]) => void;
+}
+
+const FileUploaderMultiple = ({ onFilesChange }: FileUploaderMultipleProps) => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
+
+  // Notificar al componente padre cuando los archivos cambian
+  useEffect(() => {
+    onFilesChange(files);
+  }, [files, onFilesChange]);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
