@@ -1,14 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-} from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@heroui/react';
 import { deleteHotel } from '@/services/hotel';
 import { toast } from 'sonner';
 
@@ -20,13 +13,7 @@ interface HotelDeleteModalProps {
   hotelName?: string;
 }
 
-export default function HotelDeleteModal({
-  isOpen,
-  onClose,
-  onSuccess,
-  hotelId,
-  hotelName,
-}: HotelDeleteModalProps) {
+export default function HotelDeleteModal({ isOpen, onClose, onSuccess, hotelId, hotelName }: HotelDeleteModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
 
@@ -80,23 +67,10 @@ export default function HotelDeleteModal({
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button 
-            color="default" 
-            variant="flat" 
-            onPress={onClose} 
-            disabled={isLoading}
-            className="min-w-[80px]"
-          >
+          <Button color="default" variant="flat" onPress={onClose} disabled={isLoading}>
             Cancelar
           </Button>
-          <Button
-            color="danger"
-            type="button"
-            isLoading={isLoading}
-            disabled={isLoading}
-            onPress={handleDelete}
-            className="min-w-[80px]"
-          >
+          <Button color="danger" type="button" isLoading={isLoading} disabled={isLoading} onPress={handleDelete}>
             Eliminar
           </Button>
         </ModalFooter>

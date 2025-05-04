@@ -29,47 +29,47 @@ export default function HotelsTable() {
 
   // Hook para manejar el modal de creación
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Hook para manejar el modal de edición
   const [editHotelId, setEditHotelId] = useState<string | null>(null);
-  
+
   // Estado para manejar el modal de eliminación
   const [deleteModalState, setDeleteModalState] = useState({
     isOpen: false,
     hotelId: undefined as string | undefined,
-    hotelName: undefined as string | undefined
+    hotelName: undefined as string | undefined,
   });
 
   // Función para actualizar los hoteles después de crear o editar uno
   const handleHotelCreated = () => {
     refetch();
   };
-  
+
   // Función para abrir el modal de edición
   const handleEditHotel = (hotelId: string) => {
     setEditHotelId(hotelId);
   };
-  
+
   // Función para cerrar el modal de edición
   const handleCloseEditModal = () => {
     setEditHotelId(null);
   };
-  
+
   // Función para abrir el modal de eliminación
   const handleDeleteHotel = (hotel: HotelType) => {
-    setDeleteModalState({ 
-      isOpen: true, 
+    setDeleteModalState({
+      isOpen: true,
       hotelId: hotel.id,
-      hotelName: hotel.name
+      hotelName: hotel.name,
     });
   };
-  
+
   // Función para cerrar el modal de eliminación
   const handleCloseDeleteModal = () => {
-    setDeleteModalState({ 
-      isOpen: false, 
+    setDeleteModalState({
+      isOpen: false,
       hotelId: undefined,
-      hotelName: undefined
+      hotelName: undefined,
     });
   };
 
@@ -77,7 +77,7 @@ export default function HotelsTable() {
     <div className="shadow-md rounded-xl bg-white p-4">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold text-gray-800">Hoteles</h2>
-        <Button color="primary" size="sm" onPress={() => setIsModalOpen(true)} endContent={<Plus size={16} />}>
+        <Button color="primary" onPress={() => setIsModalOpen(true)} endContent={<Plus size={16} />}>
           Nuevo Hotel
         </Button>
       </div>
@@ -174,15 +174,15 @@ export default function HotelsTable() {
       )}
       {/* Modal para crear un nuevo hotel */}
       <HotelFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleHotelCreated} />
-      
+
       {/* Modal para editar un hotel existente */}
-      <HotelFormModal 
-        isOpen={!!editHotelId} 
-        onClose={handleCloseEditModal} 
+      <HotelFormModal
+        isOpen={!!editHotelId}
+        onClose={handleCloseEditModal}
         onSuccess={handleHotelCreated}
         hotelId={editHotelId || undefined}
       />
-      
+
       {/* Modal para eliminar un hotel */}
       <HotelDeleteModal
         isOpen={deleteModalState.isOpen}
