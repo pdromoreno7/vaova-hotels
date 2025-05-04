@@ -28,7 +28,7 @@ export default function RegisterForm() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<IRegisterForm>({
     defaultValues: {
       name: '',
@@ -41,7 +41,6 @@ export default function RegisterForm() {
 
   const onSubmit = async (data: IRegisterForm) => {
     try {
-      setLoading(true);
       const result = await registerWithEmailAndPassword(data);
       if (result.success) {
         toast.success('Usuario registrado exitosamente');
@@ -54,8 +53,6 @@ export default function RegisterForm() {
     } catch (error) {
       toast.error('Error en el registro');
       console.error('Error en el registro:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -173,7 +170,7 @@ export default function RegisterForm() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <Button type="submit" color="primary" isLoading={loading} size="lg">
+          <Button type="submit" color="primary" isLoading={isSubmitting} size="lg">
             Registrarse
           </Button>
           <div className="relative">

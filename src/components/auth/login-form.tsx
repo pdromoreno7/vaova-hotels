@@ -38,7 +38,7 @@ export default function LoginForm() {
       const result = await loginWithGoogle();
       if (result.success) {
         toast.success('Inicio de sesión con Google exitoso');
-        console.log('Usuario inició sesión con Google:', result.user);
+
         router.push(`/${lang}/dashboard`);
       } else {
         toast.error('Error al iniciar sesión con Google');
@@ -55,6 +55,7 @@ export default function LoginForm() {
       if (result.success) {
         toast.success('Inicio de sesión exitoso');
         console.log('Usuario inició sesión:', result.user);
+        // La sesión ya se guarda en sessionStorage en loginWithEmailAndPassword
         router.push(`/${lang}/dashboard`);
       } else {
         toast.error('Error al iniciar sesión');
