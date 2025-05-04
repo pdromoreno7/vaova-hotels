@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useForm, Controller } from 'react-hook-form';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { registerWithEmailAndPassword, signInWithGoogle } from '@/services/auth';
+import { registerWithEmailAndPassword, registerWithGoogle } from '@/services/auth';
 import { toast } from 'sonner';
 
 interface IRegisterForm {
@@ -62,7 +62,7 @@ export default function RegisterForm() {
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      const result = await signInWithGoogle();
+      const result = await registerWithGoogle();
       if (result.success) {
         toast.success('Usuario registrado con Google exitosamente');
         console.log('Usuario registrado con Google exitosamente:', result.user);
@@ -193,7 +193,7 @@ export default function RegisterForm() {
             size="lg"
           >
             <GoogleLogo className="h-5 w-5" />
-            <span>Iniciar con Google</span>
+            <span>Registrarse con Google</span>
           </Button>
         </div>
       </form>

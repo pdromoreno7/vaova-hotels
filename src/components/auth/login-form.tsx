@@ -6,7 +6,9 @@ import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import GoogleLogo from '@/assets/icons/GoogleLogo';
 import Link from 'next/link';
 import { useForm, Controller } from 'react-hook-form';
-import { useParams } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
+import { loginWithEmailAndPassword, loginWithGoogle } from '@/services/auth';
+import { toast } from 'sonner';
 
 interface ILoginForm {
   email: string;
@@ -15,6 +17,7 @@ interface ILoginForm {
 
 export default function LoginForm() {
   const { lang } = useParams();
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -30,8 +33,36 @@ export default function LoginForm() {
     mode: 'onChange',
   });
 
-  const onSubmit = (data: ILoginForm) => {
-    console.log('Login data:', data);
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await loginWithGoogle();
+      if (result.success) {
+        toast.success('Inicio de sesión con Google exitoso');
+        console.log('Usuario inició sesión con Google:', result.user);
+        router.push(`/${lang}/dashboard`);
+      } else {
+        toast.error('Error al iniciar sesión con Google');
+      }
+    } catch (error) {
+      toast.error('Error al iniciar sesión con Google');
+      console.error('Error al iniciar sesión con Google:', error);
+    }
+  };
+
+  const onSubmit = async (data: ILoginForm) => {
+    try {
+      const result = await loginWithEmailAndPassword(data.email, data.password);
+      if (result.success) {
+        toast.success('Inicio de sesión exitoso');
+        console.log('Usuario inició sesión:', result.user);
+        router.push(`/${lang}/dashboard`);
+      } else {
+        toast.error('Error al iniciar sesión');
+      }
+    } catch (error) {
+      toast.error('Error al iniciar sesión');
+      console.error('Error al iniciar sesión:', error);
+    }
   };
 
   return (
@@ -135,6 +166,7 @@ export default function LoginForm() {
               type="button"
               fullWidth
               className="flex items-center justify-center gap-2  border border-gray-300 bg-black p-3 text-white hover:bg-gray-900"
+              onClick={handleGoogleLogin}
             >
               <GoogleLogo className="h-5 w-5" />
               <span>Iniciar con Google</span>

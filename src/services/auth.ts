@@ -1,4 +1,9 @@
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { User } from '@/interface/user.interface';
 import { db, auth } from '@/config/firabase';
@@ -32,7 +37,9 @@ export const registerWithEmailAndPassword = async (data: RegisterData) => {
     const user = userCredential.user;
 
     const result = await createUserDocument(user.uid, {
-      ...data,
+      name: data.name,
+      email: data.email,
+      role: data.role,
       avatar: '',
     });
 
@@ -47,7 +54,7 @@ export const registerWithEmailAndPassword = async (data: RegisterData) => {
   }
 };
 
-export const signInWithGoogle = async () => {
+export const registerWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -66,7 +73,32 @@ export const signInWithGoogle = async () => {
 
     return { success: true, user };
   } catch (error) {
-    console.error('Error with Google sign in:', error);
+    console.error('Error with Google registration:', error);
+    return { success: false, error };
+  }
+};
+
+export const loginWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    return { success: true, user };
+  } catch (error) {
+    console.error('Error with Google login:', error);
+    return { success: false, error };
+  }
+};
+
+export const loginWithEmailAndPassword = async (email: string, password: string) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    return { success: true, user };
+  } catch (error) {
+    console.error('Error logging in with email and password:', error);
     return { success: false, error };
   }
 };
