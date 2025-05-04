@@ -4,17 +4,34 @@ import HotelCardsInfo from '@/components/dashboard/hotels/hotel-cards-info';
 import HotelsTableFilter from '@/components/dashboard/hotels/hotels-table-filter';
 import Wrapper from '@/layouts/Wrapper';
 import { useSession } from '@/hooks/useSession';
+import { useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 
 function DashboardPage() {
-  const { session, isLoading } = useSession();
+  const router = useRouter();
+  const { lang } = useParams();
+
+  const { session, isLoading, isAuthenticated } = useSession();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push(`/${lang}/auth/login`);
+    }
+  }, [isLoading, isAuthenticated, lang, router]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg text-gray-600">Cargando...</p>
+      </div>
+    );
   }
 
-  if (!session) {
-    return <div>Unauthorized</div>;
+  // Si no está autenticado, no renderizamos nada mientras se realiza la redirección
+  if (!isAuthenticated) {
+    return null;
   }
+
   return (
     <Wrapper className="py-10">
       <div className="mb-8 space-y-1">
