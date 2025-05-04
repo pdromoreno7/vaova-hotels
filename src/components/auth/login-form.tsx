@@ -146,7 +146,7 @@ export default function LoginForm() {
         </div>
 
         <div className="w-full">
-          <Button type="submit" color="primary" fullWidth size="lg" disabled={isSubmitting}>
+          <Button type="submit" color="primary" fullWidth size="lg" disabled={isSubmitting} isLoading={isSubmitting}>
             Iniciar sesión
           </Button>
         </div>
@@ -167,7 +167,8 @@ export default function LoginForm() {
               type="button"
               fullWidth
               className="flex items-center justify-center gap-2  border border-gray-300 bg-black p-3 text-white hover:bg-gray-900"
-              onClick={handleGoogleLogin}
+              onPress={handleGoogleLogin}
+              disabled={isSubmitting}
             >
               <GoogleLogo className="h-5 w-5" />
               <span>Iniciar con Google</span>
