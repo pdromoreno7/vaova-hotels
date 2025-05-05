@@ -29,7 +29,7 @@ VAOVA Hotels es una aplicación web que permite gestionar hoteles con los cuales
 
 - **Creación de hoteles** con información detallada:
 
-  - Nombre, descripción, ubicación (país, departamento, municipio)
+  - Nombre, descripción (generada por IA), ubicación (país, departamento, municipio)
   - Logo y galería de imágenes
   - Categoría (estrellas) y calificación
   - Tipos de habitaciones disponibles con sus respectivas capacidades
@@ -56,6 +56,7 @@ VAOVA Hotels es una aplicación web que permite gestionar hoteles con los cuales
 - Soporte para internacionalización
 - Navegación intuitiva
 - Interfaz de usuario moderna con componentes de HeroUI
+- **Integración con inteligencia artificial** para generar descripciones atractivas de hoteles
 - Implementación de patrones avanzados de React como Render Props
 - Gestión de estados asíncronos con componentes reutilizables
 - Autenticación y persistencia de sesión
@@ -82,6 +83,10 @@ VAOVA Hotels es una aplicación web que permite gestionar hoteles con los cuales
 
 - **Despliegue**:
   - Vercel
+
+- **Inteligencia Artificial**:
+  - Generación automática de descripciones atractivas para hoteles
+  - Procesamiento natural del lenguaje para crear contenido de calidad
 
 ## Estructura del Proyecto
 
@@ -168,13 +173,3 @@ yarn dev
 - CRUD completo de hoteles con todos los campos requeridos
 - Visualización detallada con galería de imágenes
 - Gestión de tipos de habitaciones con disponibilidad
-
-### Características Adicionales
-
-- Diseño responsive para todas las pantallas
-- Filtros en el listado de hoteles
-- Internacionalización básica
-
-## Contacto
-
-Para más información, contacta con el equipo de desarrollo o visita [VAOVA](https://vaovatravel.com).

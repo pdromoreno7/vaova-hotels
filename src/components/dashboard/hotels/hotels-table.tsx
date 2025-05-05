@@ -21,6 +21,7 @@ import HotelDeleteModal from './hotel-delete-modal';
 import HotelsTableFilter, { HotelFilters } from './hotels-table-filter';
 import { useHotels } from '@/hooks/useHotels';
 import { Hotel as HotelType } from '@/interface/hotels.interface';
+import DrawerDetailHotel from './drawer-detail-hotel';
 
 // Usamos colores de HeroUI directamente en los componentes
 
@@ -32,6 +33,12 @@ export default function HotelsTable() {
   const [filters, setFilters] = useState<HotelFilters>({
     category: 'all',
     status: 'all',
+  });
+
+  // Estado para el drawer de detalles del hotel
+  const [detailDrawerState, setDetailDrawerState] = useState({
+    isOpen: false,
+    hotel: null as HotelType | null,
   });
 
   // Filtrar hoteles basados en los filtros seleccionados
@@ -97,142 +104,159 @@ export default function HotelsTable() {
     });
   };
 
+  const TableHotelsComponent = () => {
+    return (
+      <div className="shadow-md rounded-xl bg-white p-4 min-h-[35vh]">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-gray-800">Hoteles</h2>
+          <Button color="primary" onPress={() => setIsModalOpen(true)} endContent={<Plus size={16} />}>
+            Nuevo Hotel
+          </Button>
+        </div>
+
+        {/* Componente de filtro */}
+
+        {/* Mostrar cargador mientras se obtienen los datos */}
+        {isLoading && (
+          <div className="flex justify-center items-center py-10">
+            <Spinner size="lg" />
+          </div>
+        )}
+
+        {/* Mostrar mensaje de error si hay algún problema */}
+        {isError && (
+          <div className="text-center py-10 text-red-500">
+            Error al cargar los hoteles: {error instanceof Error ? error.message : 'Error desconocido'}
+          </div>
+        )}
+
+        {/* Mostrar mensaje si no hay hoteles */}
+        {!isLoading && !isError && hotels.length === 0 && (
+          <div className="text-center py-10 text-gray-500">
+            No has creado ningún hotel todavía. ¡Crea tu primer hotel con el botón &quot;Nuevo Hotel&quot;!
+          </div>
+        )}
+
+        {!isLoading && !isError && hotels.length > 0 && filteredHotels.length === 0 && (
+          <div className="text-center py-10 text-gray-500">
+            No se encontraron hoteles con los filtros seleccionados.
+          </div>
+        )}
+
+        {!isLoading && !isError && filteredHotels.length > 0 && (
+          <div>
+            <Table aria-label="Tabla de hoteles">
+              <TableHeader>
+                <TableColumn>Hotel</TableColumn>
+                <TableColumn>Ubicación</TableColumn>
+                <TableColumn>Categoría</TableColumn>
+                <TableColumn>Estado</TableColumn>
+                <TableColumn align="center">Acciones</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {filteredHotels.map((hotel: HotelType) => (
+                  <TableRow key={hotel.id}>
+                    <TableCell>
+                      <User
+                        name={hotel.name}
+                        avatarProps={{
+                          src: hotel.logo || 'https://via.placeholder.com/150',
+                          radius: 'lg',
+                        }}
+                        description={hotel.description ? hotel.description.substring(0, 30) + '...' : 'Hotel & Resort'}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center">
+                        <MapPin className="mr-2" size={16} />
+                        {`${hotel.city || ''}, ${hotel.state || ''}`}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center">
+                        <Star className="text-amber-500 mr-1" size={16} />
+                        {hotel.category || '-'} estrellas
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Chip color={hotel.active ? 'success' : 'danger'} size="sm" variant="flat">
+                        {hotel.active ? 'Activo' : 'Inactivo'}
+                      </Chip>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex justify-center gap-2">
+                        <Tooltip content="Ver detalles">
+                          <Button
+                            isIconOnly
+                            size="sm"
+                            variant="light"
+                            onPress={() => setDetailDrawerState({ isOpen: true, hotel })}
+                          >
+                            <Eye size={16} />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Editar">
+                          <Button isIconOnly size="sm" variant="light" onPress={() => handleEditHotel(hotel.id)}>
+                            <Edit2 size={16} />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Eliminar" color="danger">
+                          <Button
+                            isIconOnly
+                            size="sm"
+                            variant="light"
+                            color="danger"
+                            onPress={() => handleDeleteHotel(hotel)}
+                          >
+                            <Trash2 size={16} />
+                          </Button>
+                        </Tooltip>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="flex gap-6 mt-6 md:flex-row flex-col">
       <div className="md:w-1/4 w-full">
         <HotelsTableFilter onFilter={setFilters} />
       </div>
       <div className="md:w-3/4 w-full">
-        <div className="shadow-md rounded-xl bg-white p-4 min-h-[35vh]">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-800">Hoteles</h2>
-            <Button color="primary" onPress={() => setIsModalOpen(true)} endContent={<Plus size={16} />}>
-              Nuevo Hotel
-            </Button>
-          </div>
+        <TableHotelsComponent />
 
-          {/* Componente de filtro */}
+        {/* Modal para crear un nuevo hotel */}
+        <HotelFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleHotelCreated} />
 
-          {/* Mostrar cargador mientras se obtienen los datos */}
-          {isLoading && (
-            <div className="flex justify-center items-center py-10">
-              <Spinner size="lg" />
-            </div>
-          )}
+        {/* Modal para editar un hotel existente */}
+        <HotelFormModal
+          isOpen={!!editHotelId}
+          onClose={handleCloseEditModal}
+          onSuccess={handleHotelCreated}
+          hotelId={editHotelId || undefined}
+        />
 
-          {/* Mostrar mensaje de error si hay algún problema */}
-          {isError && (
-            <div className="text-center py-10 text-red-500">
-              Error al cargar los hoteles: {error instanceof Error ? error.message : 'Error desconocido'}
-            </div>
-          )}
+        {/* Modal para eliminar un hotel */}
+        <HotelDeleteModal
+          isOpen={deleteModalState.isOpen}
+          onClose={handleCloseDeleteModal}
+          onSuccess={handleHotelCreated}
+          hotelId={deleteModalState.hotelId}
+          hotelName={deleteModalState.hotelName}
+        />
 
-          {/* Mostrar mensaje si no hay hoteles */}
-          {!isLoading && !isError && hotels.length === 0 && (
-            <div className="text-center py-10 text-gray-500">
-              No has creado ningún hotel todavía. ¡Crea tu primer hotel con el botón &quot;Nuevo Hotel&quot;!
-            </div>
-          )}
-
-          {!isLoading && !isError && hotels.length > 0 && filteredHotels.length === 0 && (
-            <div className="text-center py-10 text-gray-500">
-              No se encontraron hoteles con los filtros seleccionados.
-            </div>
-          )}
-
-          {!isLoading && !isError && filteredHotels.length > 0 && (
-            <div>
-              <Table aria-label="Tabla de hoteles">
-                <TableHeader>
-                  <TableColumn>Hotel</TableColumn>
-                  <TableColumn>Ubicación</TableColumn>
-                  <TableColumn>Categoría</TableColumn>
-                  <TableColumn>Estado</TableColumn>
-                  <TableColumn align="center">Acciones</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  {filteredHotels.map((hotel: HotelType) => (
-                    <TableRow key={hotel.id}>
-                      <TableCell>
-                        <User
-                          name={hotel.name}
-                          avatarProps={{
-                            src: hotel.logo || 'https://via.placeholder.com/150',
-                            radius: 'lg',
-                          }}
-                          description={
-                            hotel.description ? hotel.description.substring(0, 30) + '...' : 'Hotel & Resort'
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <MapPin className="mr-2" size={16} />
-                          {`${hotel.city || ''}, ${hotel.state || ''}`}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <Star className="text-amber-500 mr-1" size={16} />
-                          {hotel.category || '-'} estrellas
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Chip color={hotel.active ? 'success' : 'danger'} size="sm" variant="flat">
-                          {hotel.active ? 'Activo' : 'Inactivo'}
-                        </Chip>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex justify-center gap-2">
-                          <Tooltip content="Ver detalles">
-                            <Button isIconOnly size="sm" variant="light" onPress={() => console.log('Ver', hotel.id)}>
-                              <Eye size={16} />
-                            </Button>
-                          </Tooltip>
-                          <Tooltip content="Editar">
-                            <Button isIconOnly size="sm" variant="light" onPress={() => handleEditHotel(hotel.id)}>
-                              <Edit2 size={16} />
-                            </Button>
-                          </Tooltip>
-                          <Tooltip content="Eliminar" color="danger">
-                            <Button
-                              isIconOnly
-                              size="sm"
-                              variant="light"
-                              color="danger"
-                              onPress={() => handleDeleteHotel(hotel)}
-                            >
-                              <Trash2 size={16} />
-                            </Button>
-                          </Tooltip>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-          {/* Modal para crear un nuevo hotel */}
-          <HotelFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleHotelCreated} />
-
-          {/* Modal para editar un hotel existente */}
-          <HotelFormModal
-            isOpen={!!editHotelId}
-            onClose={handleCloseEditModal}
-            onSuccess={handleHotelCreated}
-            hotelId={editHotelId || undefined}
-          />
-
-          {/* Modal para eliminar un hotel */}
-          <HotelDeleteModal
-            isOpen={deleteModalState.isOpen}
-            onClose={handleCloseDeleteModal}
-            onSuccess={handleHotelCreated}
-            hotelId={deleteModalState.hotelId}
-            hotelName={deleteModalState.hotelName}
-          />
-        </div>
+        {/* Drawer para ver detalles del hotel */}
+        <DrawerDetailHotel
+          isOpen={detailDrawerState.isOpen}
+          onClose={() => setDetailDrawerState({ isOpen: false, hotel: null })}
+          hotel={detailDrawerState.hotel}
+        />
       </div>
     </div>
   );
