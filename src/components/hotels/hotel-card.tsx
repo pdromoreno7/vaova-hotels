@@ -16,7 +16,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
     hotel.gallery && hotel.gallery.length > 0
       ? hotel.gallery[0].url
       : hotel.logo ||
-        'https://images.pexels.com/photos/1161547/pexels-photo-1161547.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+        'https://st3.depositphotos.com/23594922/31822/v/450/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg';
 
   // Determinar si el hotel está activo o inactivo
   const status = hotel.active ? 'activo' : 'inactivo';
