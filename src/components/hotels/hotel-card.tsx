@@ -12,7 +12,11 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
   const location = `${hotel.city}, ${hotel.state}, ${hotel.country}`;
 
   // Obtener la URL de la primera imagen de la galería o usar logo si no hay galería
-  const imageUrl = hotel.gallery && hotel.gallery.length > 0 ? hotel.gallery[0].url : hotel.logo || '/placeholder.svg';
+  const imageUrl =
+    hotel.gallery && hotel.gallery.length > 0
+      ? hotel.gallery[0].url
+      : hotel.logo ||
+        'https://images.pexels.com/photos/1161547/pexels-photo-1161547.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
   // Determinar si el hotel está activo o inactivo
   const status = hotel.active ? 'activo' : 'inactivo';

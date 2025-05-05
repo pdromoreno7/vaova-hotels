@@ -9,6 +9,7 @@ export default function HotelGrid() {
   const { lang } = useParams();
   // Usamos el hook useHotels con 'all' para obtener todos los hoteles
   const { hotels, isLoading, isError, error } = useHotels('all');
+  console.log('🚀 ~ HotelGrid ~ hotels:', hotels);
 
   // Mostrar estado de carga
   if (isLoading) {
