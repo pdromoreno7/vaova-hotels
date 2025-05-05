@@ -79,7 +79,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
         </div>
         {/* Precio */}
         <div className="flex items-center gap-1 text-sm font-bold text-primary-600 mt-3">
-          <span className="text-primary text-lg">${singleRoomPrice.toLocaleString()}</span>
+          <span className="text-primary text-lg">${singleRoomPrice.toLocaleString('es')}</span>
           <span className="text-xs text-gray-500">/noche</span>
         </div>
       </CardBody>
