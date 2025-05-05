@@ -23,7 +23,7 @@ export default function HotelsTableFilter({ onFilter }: HotelsTableFilterProps) 
   const handleApplyFilters = () => {
     onFilter({
       category,
-      status
+      status,
     });
   };
 
@@ -33,7 +33,7 @@ export default function HotelsTableFilter({ onFilter }: HotelsTableFilterProps) 
     setStatus('all');
     onFilter({
       category: 'all',
-      status: 'all'
+      status: 'all',
     });
   };
 
@@ -41,11 +41,11 @@ export default function HotelsTableFilter({ onFilter }: HotelsTableFilterProps) 
     <Card className="p-4">
       <CardBody>
         <h2 className="text-lg font-semibold mb-4">Filtros</h2>
-        
+
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-          <Select 
-            selectedKeys={[category]} 
+          <Select
+            selectedKeys={[category]}
             onSelectionChange={(keys) => {
               const selected = Array.from(keys)[0];
               if (selected) setCategory(selected.toString());
@@ -59,11 +59,11 @@ export default function HotelsTableFilter({ onFilter }: HotelsTableFilterProps) 
             <SelectItem key="1">1 Estrella</SelectItem>
           </Select>
         </div>
-        
+
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-          <Select 
-            selectedKeys={[status]} 
+          <Select
+            selectedKeys={[status]}
             onSelectionChange={(keys) => {
               const selected = Array.from(keys)[0];
               if (selected) setStatus(selected.toString());
@@ -74,21 +74,17 @@ export default function HotelsTableFilter({ onFilter }: HotelsTableFilterProps) 
             <SelectItem key="false">Inactivo</SelectItem>
           </Select>
         </div>
-        
-        <div className="flex space-x-2 flex-col sm:flex-row gap-2">
-          <Button 
-            color="primary" 
-            className="w-full" 
+
+        <div className="flex  flex-col sm:flex-row gap-2">
+          <Button
+            color="primary"
+            className="w-full"
             startContent={<FilterIcon size={16} />}
             onPress={handleApplyFilters}
           >
             Filtrar
           </Button>
-          <Button 
-            variant="bordered" 
-            className="sm:min-w-[80px] w-full sm:w-auto" 
-            onPress={handleResetFilters}
-          >
+          <Button variant="bordered" className="w-full" onPress={handleResetFilters}>
             Limpiar
           </Button>
         </div>
