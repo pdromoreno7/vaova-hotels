@@ -5,6 +5,7 @@ import { DollarSign, MapPin, Star, User } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { ScrollArea } from '../ui/scroll-area';
+import { AsyncStateRenderer } from '../common/AsyncStateRenderer';
 
 interface HotelDetailProps {
   hotelId: string;
@@ -15,34 +16,30 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [guests, setGuests] = useState<string>('2');
 
-  // Si está cargando, mostrar spinner
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  // Si hay error, mostrar mensaje
-  if (isError || hotels.length === 0) {
-    return (
-      <div className="bg-red-50 text-red-600 p-4 rounded-md">
-        <p>No se pudo cargar la información del hotel. Por favor, intenta más tarde.</p>
-      </div>
-    );
-  }
-
-  const hotel = hotels[0];
-
-  // Seleccionar la primera imagen de la galería o el logo como imagen principal si no hay seleccionada
-  const mainImage = selectedImage || (hotel.gallery?.length > 0 ? hotel.gallery[0].url : hotel.logo);
-
-  // Formatear la ubicación completa
-  const location = `${hotel.city}, ${hotel.state}, ${hotel.country}`;
-
   return (
-    <div className="space-y-8">
+    <AsyncStateRenderer 
+      isLoading={isLoading}
+      isError={isError}
+      data={hotels}
+      isEmpty={(data) => !data || data.length === 0}
+      errorMessage="No se pudo cargar la información del hotel. Por favor, intenta más tarde."
+      renderLoading={() => (
+        <div className="flex justify-center items-center h-64">
+          <Spinner size="lg" />
+        </div>
+      )}
+    >
+      {(hotels) => {
+        const hotel = hotels[0];
+
+        // Seleccionar la primera imagen de la galería o el logo como imagen principal si no hay seleccionada
+        const mainImage = selectedImage || (hotel.gallery?.length > 0 ? hotel.gallery[0].url : hotel.logo);
+
+        // Formatear la ubicación completa
+        const location = `${hotel.city}, ${hotel.state}, ${hotel.country}`;
+
+        return (
+          <div className="space-y-8">
       {/* Encabezado del hotel */}
 
       {/* Galería de imágenes */}
@@ -220,6 +217,9 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
           </Button>
         </div>
       </div>
-    </div>
+          </div>
+        );
+      }}
+    </AsyncStateRenderer>
   );
 }

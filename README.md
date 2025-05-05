@@ -56,6 +56,9 @@ VAOVA Hotels es una aplicación web que permite gestionar hoteles con los cuales
 - Soporte para internacionalización
 - Navegación intuitiva
 - Interfaz de usuario moderna con componentes de HeroUI
+- Implementación de patrones avanzados de React como Render Props
+- Gestión de estados asíncronos con componentes reutilizables
+- Autenticación y persistencia de sesión
 
 ## Tecnologías Utilizadas
 
@@ -75,6 +78,7 @@ VAOVA Hotels es una aplicación web que permite gestionar hoteles con los cuales
 
   - React Context API
   - React Query (TanStack Query)
+  - Patrones avanzados (Render Props)
 
 - **Despliegue**:
   - Vercel
@@ -91,12 +95,17 @@ src/
 ├── assets/           # Recursos estáticos (imágenes, iconos)
 ├── components/       # Componentes reutilizables
 │   ├── auth/         # Componentes de autenticación
+│   ├── common/       # Componentes comunes y patrones (AsyncStateRenderer, etc.)
 │   ├── dashboard/    # Componentes del panel de administración
 │   ├── hotels/       # Componentes relacionados con hoteles
 │   ├── partials/     # Componentes parciales (header, footer)
+│   ├── ui/           # Componentes UI reutilizables
+├── config/           # Configuraciones (Firebase, etc.)
+├── contexts/         # Contextos de React
 ├── hooks/            # Custom hooks
 ├── interface/        # Definiciones de tipos TypeScript
 ├── layouts/          # Componentes de layout
+├── lib/              # Bibliotecas y utilidades específicas
 ├── services/         # Servicios y API calls
 ├── utils/            # Utilidades y funciones auxiliares
 ```
