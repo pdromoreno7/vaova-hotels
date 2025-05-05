@@ -75,7 +75,7 @@ export default function HotelsTableFilter({ onFilter }: HotelsTableFilterProps) 
           </Select>
         </div>
         
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 flex-col sm:flex-row gap-2">
           <Button 
             color="primary" 
             className="w-full" 
@@ -86,7 +86,7 @@ export default function HotelsTableFilter({ onFilter }: HotelsTableFilterProps) 
           </Button>
           <Button 
             variant="bordered" 
-            className="min-w-[80px]" 
+            className="sm:min-w-[80px] w-full sm:w-auto" 
             onPress={handleResetFilters}
           >
             Limpiar
