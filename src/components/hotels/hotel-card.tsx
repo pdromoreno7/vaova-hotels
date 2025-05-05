@@ -1,5 +1,5 @@
 'use client';
-import { Avatar, Card, CardBody, Chip, Badge } from '@heroui/react';
+import { Avatar, Card, CardBody, Chip } from '@heroui/react';
 
 import Image from 'next/image';
 import { MapPin, StarIcon, DollarSign } from 'lucide-react';

@@ -1,4 +1,4 @@
-import HotelGrid from '@/components/hotels/hotel-grid';
+import HotelGrid from '@/components/hotels/hotels-grid';
 import Wrapper from '@/layouts/Wrapper';
 
 function HomePage() {

@@ -2,8 +2,11 @@
 import HotelCard from './hotel-card';
 import { useHotels } from '@/hooks/useHotels';
 import { Spinner } from '@heroui/react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 
 export default function HotelGrid() {
+  const { lang } = useParams();
   // Usamos el hook useHotels con 'all' para obtener todos los hoteles
   const { hotels, isLoading, isError, error } = useHotels('all');
 
@@ -38,7 +41,9 @@ export default function HotelGrid() {
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {hotels.map((hotel) => (
-          <HotelCard key={hotel.id} hotel={hotel} />
+          <Link key={hotel.id} href={`/${lang}/hotels/${hotel.id}`}>
+            <HotelCard hotel={hotel} />
+          </Link>
         ))}
       </div>
     </>
