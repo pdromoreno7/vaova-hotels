@@ -64,14 +64,27 @@ function Header() {
             </div>
 
             <div className="flex items-center space-x-4">
-              {!isDashboard && (
-                <Button color="primary" as={Link} href={`/${lang}/dashboard`}>
-                  Dashboard
-                </Button>
+              {isAuthenticated ? (
+                <>
+                  {!isDashboard && (
+                    <Button color="primary" as={Link} href={`/${lang}/dashboard`}>
+                      Dashboard
+                    </Button>
+                  )}
+                  <Button isIconOnly onPress={handleLogout} variant="ghost" className="rounded-full">
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button as={Link} href={`/${lang}/auth/login`} variant="ghost">
+                    Iniciar sesión
+                  </Button>
+                  <Button color="primary" as={Link} href={`/${lang}/auth/register`}>
+                    Registrarse
+                  </Button>
+                </>
               )}
-              <Button isIconOnly onPress={handleLogout} variant="ghost" className="rounded-full">
-                <LogOut className="h-4 w-4" />
-              </Button>
 
               <button
                 className="flex items-center justify-center rounded p-2 focus:outline-none md:hidden"

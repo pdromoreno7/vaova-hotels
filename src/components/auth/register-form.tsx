@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input, Button, Select, SelectItem } from '@heroui/react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import GoogleLogo from '@/assets/icons/GoogleLogo';
@@ -10,6 +10,7 @@ import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { registerWithEmailAndPassword, registerWithGoogle } from '@/services/auth';
 import { toast } from 'sonner';
+import { useSession } from '@/hooks/useSession';
 
 interface IRegisterForm {
   name: string;
@@ -19,6 +20,7 @@ interface IRegisterForm {
 }
 
 export default function RegisterForm() {
+  const { isLoading, isAuthenticated } = useSession();
   const { lang } = useParams();
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
@@ -75,6 +77,12 @@ export default function RegisterForm() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push(`/${lang}/dashboard`);
+    }
+  }, [isLoading, isAuthenticated, lang, router]);
 
   return (
     <div className="w-full max-w-md space-y-6">

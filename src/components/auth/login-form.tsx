@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input, Checkbox, Button } from '@heroui/react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import GoogleLogo from '@/assets/icons/GoogleLogo';
@@ -9,6 +9,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useRouter, useParams } from 'next/navigation';
 import { loginWithEmailAndPassword, loginWithGoogle } from '@/services/auth';
 import { toast } from 'sonner';
+import { useSession } from '@/hooks/useSession';
 
 interface ILoginForm {
   email: string;
@@ -16,6 +17,7 @@ interface ILoginForm {
 }
 
 export default function LoginForm() {
+  const { isLoading, isAuthenticated } = useSession();
   const { lang } = useParams();
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
@@ -65,6 +67,12 @@ export default function LoginForm() {
       console.error('Error al iniciar sesión:', error);
     }
   };
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push(`/${lang}/dashboard`);
+    }
+  }, [isLoading, isAuthenticated, lang, router]);
 
   return (
     <div className="w-full max-w-md space-y-6">
