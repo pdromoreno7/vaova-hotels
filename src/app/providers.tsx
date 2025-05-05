@@ -24,10 +24,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <HeroUIProvider>
-        <NextThemesProvider attribute="class" defaultTheme="dark">
-          <FavoritesProvider>
-            {children}
-          </FavoritesProvider>
+        <NextThemesProvider attribute="class" defaultTheme="light">
+          <FavoritesProvider>{children}</FavoritesProvider>
         </NextThemesProvider>
       </HeroUIProvider>
     </QueryClientProvider>
