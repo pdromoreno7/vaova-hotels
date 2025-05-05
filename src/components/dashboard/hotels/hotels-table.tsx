@@ -98,11 +98,11 @@ export default function HotelsTable() {
   };
 
   return (
-    <div className="flex gap-6 mt-6">
-      <div className="w-1/4">
+    <div className="flex gap-6 mt-6 md:flex-row flex-col">
+      <div className="md:w-1/4 w-full">
         <HotelsTableFilter onFilter={setFilters} />
       </div>
-      <div className="w-3/4">
+      <div className="md:w-3/4 w-full">
         <div className="shadow-md rounded-xl bg-white p-4">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">Hoteles</h2>
@@ -141,6 +141,7 @@ export default function HotelsTable() {
           )}
 
           {!isLoading && !isError && filteredHotels.length > 0 && (
+            <div className="overflow-x-auto">
             <Table aria-label="Tabla de hoteles">
               <TableHeader>
                 <TableColumn>Hotel</TableColumn>
@@ -208,6 +209,7 @@ export default function HotelsTable() {
                 ))}
               </TableBody>
             </Table>
+            </div>
           )}
           {/* Modal para crear un nuevo hotel */}
           <HotelFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleHotelCreated} />

@@ -11,10 +11,10 @@ const cardData = [
 
 export default function CardsInfo() {
   return (
-    <div className="flex gap-4 justify-center w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
       {cardData.map((card, index) => (
-        <Card key={index} className="flex items-center p-4 flex-1">
-          <CardBody>
+        <Card key={index} className="flex items-center p-4">
+          <CardBody className="w-full">
             <div className="flex items-center gap-4">
               <div className="text-primary">{card.icon}</div>
               <div>
