@@ -60,10 +60,9 @@ function Header() {
                   <VaovaHotelsLogo />
                 </div>
               </Link>
-              <nav className="hidden items-center gap-2 md:flex md:gap-7"></nav>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <nav className="hidden items-center space-x-4 md:flex">
               {isAuthenticated ? (
                 <>
                   {!isDashboard && (
@@ -85,15 +84,14 @@ function Header() {
                   </Button>
                 </>
               )}
-
-              <button
-                className="flex items-center justify-center rounded p-2 focus:outline-none md:hidden"
-                onClick={toggleMenu}
-                aria-label="Abrir menú"
-              >
-                {isMenuOpen ? <X className="h-6 w-6 text-gray-700" /> : <Menu className="h-6 w-6 text-gray-700" />}
-              </button>
-            </div>
+            </nav>
+            <button
+              className="flex items-center justify-center rounded p-2 focus:outline-none md:hidden"
+              onClick={toggleMenu}
+              aria-label="Abrir menú"
+            >
+              {isMenuOpen ? <X className="h-6 w-6 text-gray-700" /> : <Menu className="h-6 w-6 text-gray-700" />}
+            </button>
           </div>
         </Wrapper>
       </header>
@@ -110,7 +108,7 @@ function Header() {
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex flex-col space-y-4 pt-8">
+          <div className="flex flex-col space-y-4 pt-14">
             {isAuthenticated ? (
               <>
                 {!isDashboard && (

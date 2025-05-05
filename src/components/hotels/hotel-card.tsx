@@ -19,7 +19,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
   const singleRoomPrice = hotel.rooms.singleRoom.price;
 
   return (
-    <Card>
+    <Card className="h-[450px]">
       <div className="relative h-64 w-full">
         <Image src={imageUrl} alt={hotel.name} className="object-cover w-full h-full" width={500} height={500} />
 
@@ -73,7 +73,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
         </div>
 
         {/* Descripción corta */}
-        <p className="text-sm text-gray-500 mt-3 line-clamp-2">{hotel.description}</p>
+        <p className="text-sm text-gray-500 mt-3 line-clamp-2">{hotel.description.slice(0, 30) + '... '}</p>
       </CardBody>
     </Card>
   );
