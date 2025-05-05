@@ -88,7 +88,7 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
               <Avatar
                 src={hotel.logo}
                 fallback={hotel.name.substring(0, 2).toUpperCase()}
-                className="border-2 border-gray-200"
+                className="border-2 ml-1 border-gray-200"
               />
             </p>
             <div className="flex items-center gap-2 mt-2">
