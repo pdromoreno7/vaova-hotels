@@ -35,7 +35,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
   };
 
   return (
-    <Card className="h-[450px]">
+    <Card>
       <div className="relative h-64 w-full">
         <Image src={imageUrl} alt={hotel.name} className="object-cover w-full h-full" width={500} height={500} />
 
@@ -61,7 +61,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
 
       <CardBody className="p-5">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-bold">{hotel.name}</h2>
+          <h2 className="text-xl font-bold truncate">{hotel.name}</h2>
           <Chip color={status === 'activo' ? 'success' : 'danger'} variant={status === 'activo' ? 'solid' : 'bordered'}>
             {status}
           </Chip>
@@ -79,14 +79,9 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
         </div>
         {/* Precio */}
         <div className="flex items-center gap-1 text-sm font-bold text-primary-600 mt-3">
-          <span className="text-primary">${singleRoomPrice.toLocaleString()}</span>
+          <span className="text-primary text-lg">${singleRoomPrice.toLocaleString()}</span>
           <span className="text-xs text-gray-500">/noche</span>
         </div>
-
-        {/* Descripción corta */}
-        <p className="text-sm text-gray-500 mt-3 line-clamp-2">
-          {hotel.description ? hotel.description.slice(0, 30) + '... ' : 'Sin descripción'}
-        </p>
       </CardBody>
     </Card>
   );
