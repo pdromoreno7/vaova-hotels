@@ -55,7 +55,7 @@ function Header() {
         <Wrapper>
           <div className="flex items-center justify-between py-3">
             <div className="flex items-center gap-5 space-x-4">
-              <Link href="/">
+              <Link href={`/${lang}`}>
                 <div className="flex items-center pb-2">
                   <VaovaHotelsLogo />
                 </div>
