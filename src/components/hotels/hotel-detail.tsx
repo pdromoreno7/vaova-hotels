@@ -109,7 +109,7 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
         {/* Columna derecha: Precio y habitaciones */}
         <div>
           {/* Habitaciones disponibles */}
-          <Card>
+          <Card className="w-full md:w-[372px]">
             <CardBody>
               <h2 className="text-xl font-bold mb-4">Habitaciones disponibles</h2>
               <div className="space-y-4">
@@ -118,12 +118,12 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
                     <div>
                       <h3 className="  font-semibold">Habitación Individual</h3>
                       <p className="text-sm text-gray-500">Disponibles: {hotel.rooms.singleRoom.available}</p>
-                    </div>
-                    <div className="flex items-center gap-6">
                       <div className="font-semibold text-green-600">
                         <DollarSign className="inline-block h-4 w-4" />
                         {hotel.rooms.singleRoom.price.toLocaleString('es')}
                       </div>
+                    </div>
+                    <div className="flex items-center gap-6">
                       <Button color="primary" size="sm">
                         Reservar
                       </Button>
@@ -136,12 +136,12 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
                     <div>
                       <h3 className="font-semibold">Habitación Doble</h3>
                       <p className="text-sm text-gray-500">Disponibles: {hotel.rooms.twinRoom.available}</p>
-                    </div>
-                    <div className="flex items-center gap-6">
                       <div className="font-semibold text-green-600">
                         <DollarSign className="inline-block h-4 w-4" />
                         {hotel.rooms.twinRoom.price.toLocaleString('es')}
                       </div>
+                    </div>
+                    <div className="flex items-center gap-6">
                       <Button color="primary" size="sm">
                         Reservar
                       </Button>
@@ -154,12 +154,12 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
                     <div>
                       <h3 className="font-semibold">Suite</h3>
                       <p className="text-sm text-gray-500">Disponibles: {hotel.rooms.queenRoom.available}</p>
-                    </div>
-                    <div className="flex items-center gap-6">
                       <div className="font-semibold text-green-600">
                         <DollarSign className="inline-block h-4 w-4" />
                         {hotel.rooms.queenRoom.price.toLocaleString('es')}
                       </div>
+                    </div>
+                    <div className="flex items-center gap-6">
                       <Button color="primary" size="sm">
                         Reservar
                       </Button>
