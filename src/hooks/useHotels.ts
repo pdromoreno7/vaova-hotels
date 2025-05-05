@@ -13,10 +13,12 @@ export const useHotels = (queryType: 'user' | 'all' | 'single' = 'user', hotelId
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     // La clave de consulta depende del tipo de consulta
-    queryKey: 
-      queryType === 'user' ? ['hotels', 'user', session?.id] : 
-      queryType === 'single' ? ['hotel', hotelId] : 
-      ['hotels', 'all'],
+    queryKey:
+      queryType === 'user'
+        ? ['hotels', 'user', session?.id]
+        : queryType === 'single'
+        ? ['hotel', hotelId]
+        : ['hotels', 'all'],
     queryFn: async () => {
       // Para consulta de hotel individual
       if (queryType === 'single') {
@@ -29,12 +31,12 @@ export const useHotels = (queryType: 'user' | 'all' | 'single' = 'user', hotelId
         }
         throw new Error((result.error as string) || 'Error al cargar el hotel');
       }
-      
+
       // Si buscamos hoteles del usuario pero no hay sesión, devolver array vacío
       if (queryType === 'user' && !session?.id) {
         return [];
       }
-      
+
       let result;
       if (queryType === 'user') {
         // Obtener hoteles del usuario
@@ -45,7 +47,19 @@ export const useHotels = (queryType: 'user' | 'all' | 'single' = 'user', hotelId
       }
 
       if (result.success) {
-        return result.data || [];
+        let hotels = result.data || [];
+        
+        // Solo para la consulta de todos los hoteles, organizamos por prioridad
+        if (queryType === 'all') {
+          // Separamos los hoteles en dos grupos
+          const hotelsWithImages = hotels.filter((hotel) => hotel.gallery && hotel.gallery.length > 0);
+          const hotelsWithoutImages = hotels.filter((hotel) => !hotel.gallery || hotel.gallery.length === 0);
+          
+          // Ordenamos la lista para mostrar primero los hoteles con imágenes
+          hotels = [...hotelsWithImages, ...hotelsWithoutImages];
+        }
+        
+        return hotels;
       }
 
       throw new Error((result.error as string) || 'Error al cargar hoteles');
