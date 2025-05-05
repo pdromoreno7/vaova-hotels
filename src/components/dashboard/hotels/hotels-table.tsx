@@ -103,7 +103,7 @@ export default function HotelsTable() {
         <HotelsTableFilter onFilter={setFilters} />
       </div>
       <div className="md:w-3/4 w-full">
-        <div className="shadow-md rounded-xl bg-white p-4">
+        <div className="shadow-md rounded-xl bg-white p-4 min-h-[35vh]">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">Hoteles</h2>
             <Button color="primary" onPress={() => setIsModalOpen(true)} endContent={<Plus size={16} />}>
@@ -141,74 +141,76 @@ export default function HotelsTable() {
           )}
 
           {!isLoading && !isError && filteredHotels.length > 0 && (
-            <div className="overflow-x-auto">
-            <Table aria-label="Tabla de hoteles">
-              <TableHeader>
-                <TableColumn>Hotel</TableColumn>
-                <TableColumn>Ubicación</TableColumn>
-                <TableColumn>Categoría</TableColumn>
-                <TableColumn>Estado</TableColumn>
-                <TableColumn align="center">Acciones</TableColumn>
-              </TableHeader>
-              <TableBody>
-                {filteredHotels.map((hotel: HotelType) => (
-                  <TableRow key={hotel.id}>
-                    <TableCell>
-                      <User
-                        name={hotel.name}
-                        avatarProps={{
-                          src: hotel.logo || 'https://via.placeholder.com/150',
-                          radius: 'lg',
-                        }}
-                        description={hotel.description ? hotel.description.substring(0, 30) + '...' : 'Hotel & Resort'}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center">
-                        <MapPin className="mr-2" size={16} />
-                        {`${hotel.city || ''}, ${hotel.state || ''}`}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center">
-                        <Star className="text-amber-500 mr-1" size={16} />
-                        {hotel.category || '-'} estrellas
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Chip color={hotel.active ? 'success' : 'danger'} size="sm" variant="flat">
-                        {hotel.active ? 'Activo' : 'Inactivo'}
-                      </Chip>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex justify-center gap-2">
-                        <Tooltip content="Ver detalles">
-                          <Button isIconOnly size="sm" variant="light" onPress={() => console.log('Ver', hotel.id)}>
-                            <Eye size={16} />
-                          </Button>
-                        </Tooltip>
-                        <Tooltip content="Editar">
-                          <Button isIconOnly size="sm" variant="light" onPress={() => handleEditHotel(hotel.id)}>
-                            <Edit2 size={16} />
-                          </Button>
-                        </Tooltip>
-                        <Tooltip content="Eliminar" color="danger">
-                          <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            color="danger"
-                            onPress={() => handleDeleteHotel(hotel)}
-                          >
-                            <Trash2 size={16} />
-                          </Button>
-                        </Tooltip>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div>
+              <Table aria-label="Tabla de hoteles">
+                <TableHeader>
+                  <TableColumn>Hotel</TableColumn>
+                  <TableColumn>Ubicación</TableColumn>
+                  <TableColumn>Categoría</TableColumn>
+                  <TableColumn>Estado</TableColumn>
+                  <TableColumn align="center">Acciones</TableColumn>
+                </TableHeader>
+                <TableBody>
+                  {filteredHotels.map((hotel: HotelType) => (
+                    <TableRow key={hotel.id}>
+                      <TableCell>
+                        <User
+                          name={hotel.name}
+                          avatarProps={{
+                            src: hotel.logo || 'https://via.placeholder.com/150',
+                            radius: 'lg',
+                          }}
+                          description={
+                            hotel.description ? hotel.description.substring(0, 30) + '...' : 'Hotel & Resort'
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <MapPin className="mr-2" size={16} />
+                          {`${hotel.city || ''}, ${hotel.state || ''}`}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <Star className="text-amber-500 mr-1" size={16} />
+                          {hotel.category || '-'} estrellas
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Chip color={hotel.active ? 'success' : 'danger'} size="sm" variant="flat">
+                          {hotel.active ? 'Activo' : 'Inactivo'}
+                        </Chip>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex justify-center gap-2">
+                          <Tooltip content="Ver detalles">
+                            <Button isIconOnly size="sm" variant="light" onPress={() => console.log('Ver', hotel.id)}>
+                              <Eye size={16} />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip content="Editar">
+                            <Button isIconOnly size="sm" variant="light" onPress={() => handleEditHotel(hotel.id)}>
+                              <Edit2 size={16} />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip content="Eliminar" color="danger">
+                            <Button
+                              isIconOnly
+                              size="sm"
+                              variant="light"
+                              color="danger"
+                              onPress={() => handleDeleteHotel(hotel)}
+                            >
+                              <Trash2 size={16} />
+                            </Button>
+                          </Tooltip>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           )}
           {/* Modal para crear un nuevo hotel */}
