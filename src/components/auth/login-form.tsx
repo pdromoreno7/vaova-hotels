@@ -18,6 +18,7 @@ interface ILoginForm {
 
 export default function LoginForm() {
   const { isLoading, isAuthenticated } = useSession();
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
   const { lang } = useParams();
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
@@ -37,6 +38,7 @@ export default function LoginForm() {
 
   const handleGoogleLogin = async () => {
     try {
+      setLoadingGoogle(true);
       const result = await loginWithGoogle();
       if (result.success) {
         toast.success('Inicio de sesión con Google exitoso');
@@ -48,6 +50,8 @@ export default function LoginForm() {
     } catch (error) {
       toast.error('Error al iniciar sesión con Google');
       console.error('Error al iniciar sesión con Google:', error);
+    } finally {
+      setLoadingGoogle(false);
     }
   };
 
@@ -176,7 +180,8 @@ export default function LoginForm() {
               fullWidth
               className="flex items-center justify-center gap-2  border border-gray-300 bg-black p-3 text-white hover:bg-gray-900"
               onPress={handleGoogleLogin}
-              disabled={isSubmitting}
+              disabled={loadingGoogle}
+              isLoading={loadingGoogle}
             >
               <GoogleLogo className="h-5 w-5" />
               <span>Iniciar con Google</span>

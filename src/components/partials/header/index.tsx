@@ -103,7 +103,7 @@ function Header() {
               )}
             </nav>
             <div className="md:hidden flex items-center">
-              <HeaderButtonAvatar onLogout={handleLogout} />
+              {isAuthenticated && <HeaderButtonAvatar onLogout={handleLogout} />}
               <button
                 className="flex items-center justify-center rounded p-2 focus:outline-none md:hidden"
                 onClick={toggleMenu}
