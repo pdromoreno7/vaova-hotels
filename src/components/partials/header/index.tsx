@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, LogOut, Heart } from 'lucide-react';
+import HeaderButtonAvatar from './header-button-avatar';
 import { Button, useDisclosure } from '@heroui/react';
 import Wrapper from '@/layouts/Wrapper';
 import { useSession } from '@/hooks/useSession';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { LogoutModal } from '../Logout-modal';
 import VaovaHotelsLogo from '@/assets/brand/vaova-hotels-logo';
-import FavoritesDrawer from './FavoritesDrawer';
+import FavoritesDrawer from './favorites-drawer';
 import { useFavorites } from '@/contexts/FavoritesContext';
 
 function Header() {
@@ -88,9 +89,7 @@ function Header() {
                       Dashboard
                     </Button>
                   )}
-                  <Button isIconOnly onPress={handleLogout} variant="ghost" className="rounded-full">
-                    <LogOut className="h-4 w-4" />
-                  </Button>
+                  <HeaderButtonAvatar onLogout={handleLogout} />
                 </>
               ) : (
                 <>
@@ -103,13 +102,16 @@ function Header() {
                 </>
               )}
             </nav>
-            <button
-              className="flex items-center justify-center rounded p-2 focus:outline-none md:hidden"
-              onClick={toggleMenu}
-              aria-label="Abrir menú"
-            >
-              {isMenuOpen ? <X className="h-6 w-6 text-gray-700" /> : <Menu className="h-6 w-6 text-gray-700" />}
-            </button>
+            <div className="md:hidden flex items-center">
+              <HeaderButtonAvatar onLogout={handleLogout} />
+              <button
+                className="flex items-center justify-center rounded p-2 focus:outline-none md:hidden"
+                onClick={toggleMenu}
+                aria-label="Abrir menú"
+              >
+                {isMenuOpen ? <X className="h-6 w-6 text-gray-700" /> : <Menu className="h-6 w-6 text-gray-700" />}
+              </button>
+            </div>
           </div>
         </Wrapper>
       </header>
