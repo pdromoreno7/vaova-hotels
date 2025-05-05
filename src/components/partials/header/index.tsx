@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, LogOut } from 'lucide-react';
+import { Menu, X, LogOut, Heart } from 'lucide-react';
 import { Button, useDisclosure } from '@heroui/react';
 import Wrapper from '@/layouts/Wrapper';
 import { useSession } from '@/hooks/useSession';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { LogoutModal } from '../Logout-modal';
 import VaovaHotelsLogo from '@/assets/brand/vaova-hotels-logo';
+import FavoritesDrawer from './FavoritesDrawer';
+import { useFavorites } from '@/contexts/FavoritesContext';
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,6 +21,12 @@ function Header() {
   const isDashboard = pathname.includes('/dashboard');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
+
+  // Drawer para favoritos
+  const { isOpen: isFavoritesOpen, onOpen: onFavoritesOpen, onOpenChange: onFavoritesOpenChange } = useDisclosure();
+
+  // Obtener favoritos desde el contexto
+  const { favoritesCount } = useFavorites();
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -65,6 +73,16 @@ function Header() {
             <nav className="hidden items-center space-x-4 md:flex">
               {isAuthenticated ? (
                 <>
+                  {/* Botón de favoritos con contador */}
+                  <button onClick={onFavoritesOpen} className="rounded-full relative">
+                    <Heart className="h-6 w-6 text-gray-400 hover:text-black transition-colors" />
+                    {favoritesCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+                        {favoritesCount > 9 ? '9+' : favoritesCount}
+                      </span>
+                    )}
+                  </button>
+
                   {!isDashboard && (
                     <Button color="primary" as={Link} href={`/${lang}/dashboard`}>
                       Dashboard
@@ -111,6 +129,24 @@ function Header() {
           <div className="flex flex-col space-y-4 pt-14">
             {isAuthenticated ? (
               <>
+                {/* Botón de favoritos para móvil */}
+                <Button
+                  onPress={() => {
+                    toggleMenu();
+                    onFavoritesOpen();
+                  }}
+                  className="flex items-center justify-start gap-2"
+                  variant="ghost"
+                >
+                  <Heart className="h-5 w-5" />
+                  <span>Mis favoritos</span>
+                  {favoritesCount > 0 && (
+                    <span className="ml-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                      {favoritesCount}
+                    </span>
+                  )}
+                </Button>
+
                 {!isDashboard && (
                   <Button color="primary" as={Link} href={`/${lang}/dashboard`} className="w-full" onPress={toggleMenu}>
                     Dashboard
@@ -122,8 +158,10 @@ function Header() {
                     toggleMenu();
                   }}
                   variant="ghost"
+                  className="flex items-center justify-start gap-2"
                 >
                   <LogOut className="h-5 w-5" />
+                  <span>Cerrar sesión</span>
                 </Button>
               </>
             ) : (
@@ -140,6 +178,9 @@ function Header() {
         </div>
       </div>
       <LogoutModal isOpen={isOpen} onClose={onClose} onConfirm={confirmLogout} />
+
+      {/* Drawer de favoritos */}
+      <FavoritesDrawer isOpen={isFavoritesOpen} onOpenChange={onFavoritesOpenChange} />
     </>
   );
 }

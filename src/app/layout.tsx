@@ -6,6 +6,7 @@ import { Providers } from './providers';
 import { Toaster } from 'sonner';
 import Header from '@/components/partials/header';
 import { usePathname } from 'next/navigation';
+// import ThemeSwitch from '@/components/partials/ThemeSwitch';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -35,6 +36,7 @@ export default function RootLayout({
           {!isAuthPage && <Header />}
           {children}
           <Toaster richColors position="top-right" />
+          {/* <ThemeSwitch /> */}
         </Providers>
       </body>
     </html>

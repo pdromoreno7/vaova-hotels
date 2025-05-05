@@ -1,0 +1,78 @@
+'use client';
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Hotel } from '@/interface/hotels.interface';
+
+interface FavoritesContextProps {
+  favorites: Hotel[];
+  addFavorite: (hotel: Hotel) => void;
+  removeFavorite: (hotelId: string) => void;
+  isFavorite: (hotelId: string) => boolean;
+  favoritesCount: number;
+}
+
+const FavoritesContext = createContext<FavoritesContextProps | undefined>(undefined);
+
+export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [favorites, setFavorites] = useState<Hotel[]>([]);
+
+  // Cargar favoritos del localStorage al iniciar
+  useEffect(() => {
+    try {
+      const storedFavorites = localStorage.getItem('favorites');
+      if (storedFavorites) {
+        setFavorites(JSON.parse(storedFavorites));
+      }
+    } catch (error) {
+      console.error('Error loading favorites from localStorage:', error);
+    }
+  }, []);
+
+  // Guardar favoritos en localStorage cuando cambien
+  useEffect(() => {
+    try {
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+    } catch (error) {
+      console.error('Error saving favorites to localStorage:', error);
+    }
+  }, [favorites]);
+
+  const addFavorite = (hotel: Hotel) => {
+    setFavorites((prev) => {
+      if (prev.some((fav) => fav.id === hotel.id)) {
+        return prev; // El hotel ya está en favoritos
+      }
+      return [...prev, hotel];
+    });
+  };
+
+  const removeFavorite = (hotelId: string) => {
+    setFavorites((prev) => prev.filter((hotel) => hotel.id !== hotelId));
+  };
+
+  const isFavorite = (hotelId: string) => {
+    return favorites.some((hotel) => hotel.id === hotelId);
+  };
+
+  return (
+    <FavoritesContext.Provider 
+      value={{ 
+        favorites, 
+        addFavorite, 
+        removeFavorite, 
+        isFavorite, 
+        favoritesCount: favorites.length 
+      }}
+    >
+      {children}
+    </FavoritesContext.Provider>
+  );
+};
+
+export const useFavorites = () => {
+  const context = useContext(FavoritesContext);
+  if (context === undefined) {
+    throw new Error('useFavorites must be used within a FavoritesProvider');
+  }
+  return context;
+};
