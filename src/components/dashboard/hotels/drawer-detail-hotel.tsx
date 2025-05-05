@@ -12,7 +12,7 @@ import {
   CardBody,
   Chip,
 } from '@heroui/react';
-import { Star, MapPin, DollarSign, User, Calendar, X } from 'lucide-react';
+import { Star, MapPin, DollarSign, User, Calendar, X, MoveUpRight } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Hotel as HotelType, RoomInventory } from '@/interface/hotels.interface';
@@ -71,22 +71,7 @@ export default function DrawerDetailHotel({ isOpen, onClose, hotel }: DrawerDeta
                   className="font-medium text-small text-default-500"
                   size="sm"
                   variant="light"
-                  endContent={
-                    <svg
-                      className="ml-1"
-                      fill="none"
-                      height="16"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M7 17 17 7M7 7h10v10" />
-                    </svg>
-                  }
+                  endContent={<MoveUpRight />}
                 >
                   Ver página del hotel
                 </Button>
