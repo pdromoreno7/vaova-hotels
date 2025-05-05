@@ -1,11 +1,13 @@
 'use client';
 import { Avatar, Card, CardBody, Chip } from '@heroui/react';
-
+import { MapPin, Star, Heart } from 'lucide-react';
 import Image from 'next/image';
-import { MapPin, StarIcon, DollarSign } from 'lucide-react';
 import { Hotel } from '@/interface/hotels.interface';
+import { useFavorites } from '@/contexts/FavoritesContext';
 
 export default function HotelCard({ hotel }: { hotel: Hotel }) {
+  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+
   // Crear la ubicación combinando ciudad, estado y país
   const location = `${hotel.city}, ${hotel.state}, ${hotel.country}`;
 
@@ -17,6 +19,20 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
 
   // Obtener el precio de la habitación singleRoom
   const singleRoomPrice = hotel.rooms.singleRoom.price;
+
+  // Verificar si el hotel ya está en favoritos
+  const isHotelFavorite = isFavorite(hotel.id);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Evitar navegación del Link padre
+    e.stopPropagation();
+
+    if (isHotelFavorite) {
+      removeFavorite(hotel.id);
+    } else {
+      addFavorite(hotel);
+    }
+  };
 
   return (
     <Card className="h-[450px]">
@@ -33,47 +49,44 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
             color="default"
           />
         </div>
+
+        {/* Botón de favorito */}
+        <button
+          onClick={handleFavoriteClick}
+          className="absolute top-3 left-3 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition-colors"
+        >
+          <Heart className={`h-5 w-5 ${isHotelFavorite ? 'fill-black text-black' : 'text-gray-700'}`} />
+        </button>
       </div>
 
       <CardBody className="p-5">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-xl font-bold">{hotel.name}</h2>
-          <Chip
-            color={status === 'activo' ? 'success' : 'danger'}
-            variant={status === 'activo' ? 'solid' : 'bordered'}
-            radius="full"
-            size="sm"
-            className="capitalize"
-          >
+          <Chip color={status === 'activo' ? 'success' : 'danger'} variant={status === 'activo' ? 'solid' : 'bordered'}>
             {status}
           </Chip>
         </div>
 
-        <p className="text-gray-500 mt-1 flex items-center gap-2">
-          <MapPin size={16} /> {location}
-        </p>
+        <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
+          <MapPin className="w-4 h-4" />
+          <span>{location}</span>
+        </div>
 
-        <div className="flex justify-between items-center mt-4">
-          <div className="flex">
-            {/* Mostrar estrellas según la categoría del hotel (3, 4 o 5) */}
-            {Array.from({ length: 5 }).map((_, i) => (
-              <StarIcon
-                key={i}
-                className={`w-5 h-5 ${i < hotel.category ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-              />
-            ))}
-          </div>
-
-          {/* Precio de habitación singleRoom */}
-          <div className="flex items-center gap-1 text-green-600 font-semibold">
-            <DollarSign size={16} />
-            <span>{singleRoomPrice.toLocaleString('es-CO')}</span>
-            <span className="text-xs text-gray-500">/noche</span>
-          </div>
+        {/* Mostrar rating con estrellas */}
+        <div className="flex items-center gap-1 mb-3">
+          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+          <span className="text-sm font-medium">{hotel.category} Estrellas</span>
+        </div>
+        {/* Precio */}
+        <div className="flex items-center gap-1 text-sm font-bold text-primary-600 mt-3">
+          <span className="text-primary">${singleRoomPrice.toLocaleString()}</span>
+          <span className="text-xs text-gray-500">/noche</span>
         </div>
 
         {/* Descripción corta */}
-        <p className="text-sm text-gray-500 mt-3 line-clamp-2">{hotel.description.slice(0, 30) + '... '}</p>
+        <p className="text-sm text-gray-500 mt-3 line-clamp-2">
+          {hotel.description ? hotel.description.slice(0, 30) + '... ' : 'Sin descripción'}
+        </p>
       </CardBody>
     </Card>
   );
