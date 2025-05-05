@@ -33,7 +33,11 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
         const hotel = hotels[0];
 
         // Seleccionar la primera imagen de la galería o el logo como imagen principal si no hay seleccionada
-        const mainImage = selectedImage || (hotel.gallery?.length > 0 ? hotel.gallery[0].url : hotel.logo);
+        const mainImage =
+          selectedImage ||
+          (hotel.gallery?.length > 0
+            ? hotel.gallery[0].url
+            : 'https://st3.depositphotos.com/23594922/31822/v/450/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg');
 
         // Formatear la ubicación completa
         const location = `${hotel.city}, ${hotel.state}, ${hotel.country}`;
