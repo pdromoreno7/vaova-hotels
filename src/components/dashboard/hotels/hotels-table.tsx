@@ -38,7 +38,7 @@ export default function HotelsTable() {
   // Estado para el drawer de detalles del hotel
   const [detailDrawerState, setDetailDrawerState] = useState({
     isOpen: false,
-    hotel: null as any,  // Usamos any temporalmente para evitar problemas de tipos
+    hotel: null as HotelType | null,
   });
 
   // Filtrar hoteles basados en los filtros seleccionados
@@ -186,10 +186,10 @@ export default function HotelsTable() {
                     <TableCell>
                       <div className="flex justify-center gap-2">
                         <Tooltip content="Ver detalles">
-                          <Button 
-                            isIconOnly 
-                            size="sm" 
-                            variant="light" 
+                          <Button
+                            isIconOnly
+                            size="sm"
+                            variant="light"
                             onPress={() => setDetailDrawerState({ isOpen: true, hotel })}
                           >
                             <Eye size={16} />
@@ -250,9 +250,9 @@ export default function HotelsTable() {
           hotelId={deleteModalState.hotelId}
           hotelName={deleteModalState.hotelName}
         />
-        
+
         {/* Drawer para ver detalles del hotel */}
-        <DrawerDetailHotel 
+        <DrawerDetailHotel
           isOpen={detailDrawerState.isOpen}
           onClose={() => setDetailDrawerState({ isOpen: false, hotel: null })}
           hotel={detailDrawerState.hotel}

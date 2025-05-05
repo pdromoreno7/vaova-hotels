@@ -7,13 +7,12 @@ import {
   DrawerBody,
   Button,
   Image,
-  Link as HeroLink,
   Tooltip,
   Card,
   CardBody,
   Chip,
 } from '@heroui/react';
-import { Star, MapPin, DollarSign, User, Calendar } from 'lucide-react';
+import { Star, MapPin, DollarSign, User, Calendar, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Hotel as HotelType, RoomInventory } from '@/interface/hotels.interface';
@@ -48,7 +47,6 @@ export default function DrawerDetailHotel({ isOpen, onClose, hotel }: DrawerDeta
   return (
     <Drawer
       hideCloseButton
-      backdrop="blur"
       classNames={{
         base: 'data-[placement=right]:sm:m-2 data-[placement=left]:sm:m-2 rounded-medium',
       }}
@@ -63,27 +61,19 @@ export default function DrawerDetailHotel({ isOpen, onClose, hotel }: DrawerDeta
             <DrawerHeader className="absolute top-0 inset-x-0 z-50 flex flex-row gap-2 px-4 py-3 border-b border-default-200/50 justify-between bg-content1/50 backdrop-saturate-150 backdrop-blur-lg">
               <Tooltip content="Cerrar">
                 <Button isIconOnly className="text-default-400" size="sm" variant="light" onPress={onModalClose}>
-                  <svg
-                    fill="none"
-                    height="20"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    width="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
+                  <X size={20} />
                 </Button>
               </Tooltip>
               <div className="w-full flex justify-start gap-2">
-                <Link href={`/${lang}/hotels/${hotel.id}`} passHref>
-                  <HeroLink className="font-medium text-small text-default-500" size="sm">
-                    Ver página del hotel
+                <Button
+                  as={Link}
+                  href={`/${lang}/hotels/${hotel.id}`}
+                  className="font-medium text-small text-default-500"
+                  size="sm"
+                  variant="light"
+                  endContent={
                     <svg
-                      className="ml-1 inline-block"
+                      className="ml-1"
                       fill="none"
                       height="16"
                       stroke="currentColor"
@@ -96,28 +86,10 @@ export default function DrawerDetailHotel({ isOpen, onClose, hotel }: DrawerDeta
                     >
                       <path d="M7 17 17 7M7 7h10v10" />
                     </svg>
-                  </HeroLink>
-                </Link>
-              </div>
-              <div className="flex gap-1 items-center">
-                <Tooltip content="Editar">
-                  <Button isIconOnly className="text-default-500" size="sm" variant="flat">
-                    <svg
-                      fill="none"
-                      height="16"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
-                  </Button>
-                </Tooltip>
+                  }
+                >
+                  Ver página del hotel
+                </Button>
               </div>
             </DrawerHeader>
             <DrawerBody className="pt-16">
