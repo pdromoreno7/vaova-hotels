@@ -13,6 +13,17 @@ interface HotelDeleteModalProps {
   hotelName?: string;
 }
 
+/**
+ * HotelDeleteModal es un modal que permite eliminar un hotel.
+ *
+ * @param {HotelDeleteModalProps} props - Propiedades del modal.
+ * @param {boolean} props.isOpen - Indica si el modal esta abierto.
+ * @param {function} props.onClose - Funcion que se llama cuando el modal se cierra.
+ * @param {function} props.onSuccess - Funcion que se llama cuando el hotel se elimina exitosamente.
+ * @param {string} props.hotelId - ID del hotel a eliminar.
+ * @param {string} props.hotelName - Nombre del hotel a eliminar.
+ * @returns {JSX.Element} - El modal HotelDeleteModal.
+ */
 export default function HotelDeleteModal({ isOpen, onClose, onSuccess, hotelId, hotelName }: HotelDeleteModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');

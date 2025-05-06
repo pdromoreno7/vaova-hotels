@@ -23,33 +23,40 @@ import { useHotels } from '@/hooks/useHotels';
 import { Hotel as HotelType } from '@/interface/hotels.interface';
 import DrawerDetailHotel from './drawer-detail-hotel';
 
-// Usamos colores de HeroUI directamente en los componentes
+// We use HeroUI colors directly in components
 
+/**
+ * Component that displays a table with the list of user's hotels.
+ * It includes features to filter hotels by category and status,
+ * as well as to create, edit and delete hotels.
+ *
+ * @returns A JSX component that represents the hotels table.
+ */
 export default function HotelsTable() {
-  // Usar el hook personalizado para obtener los hoteles del usuario
+  // Use the custom hook to get the user's hotels
   const { hotels, isLoading, isError, error, refetch } = useHotels();
 
-  // Estado para los filtros de la tabla
+  // State for table filters
   const [filters, setFilters] = useState<HotelFilters>({
     category: 'all',
     status: 'all',
   });
 
-  // Estado para el drawer de detalles del hotel
+  // State for the hotel details drawer
   const [detailDrawerState, setDetailDrawerState] = useState({
     isOpen: false,
     hotel: null as HotelType | null,
   });
 
-  // Filtrar hoteles basados en los filtros seleccionados
+  // Filter hotels based on selected filters
   const filteredHotels = useMemo(() => {
     return hotels.filter((hotel) => {
-      // Filtrar por categoría
+      // Filter by category
       if (filters.category !== 'all' && hotel.category.toString() !== filters.category) {
         return false;
       }
 
-      // Filtrar por estado
+      // Filter by status
       if (filters.status !== 'all' && hotel.active.toString() !== filters.status) {
         return false;
       }
@@ -58,35 +65,35 @@ export default function HotelsTable() {
     });
   }, [hotels, filters]);
 
-  // Hook para manejar el modal de creación
+  // State for the create hotel modal
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Hook para manejar el modal de edición
+  // State for the edit hotel modal
   const [editHotelId, setEditHotelId] = useState<string | null>(null);
 
-  // Estado para manejar el modal de eliminación
+  // State for the delete hotel modal
   const [deleteModalState, setDeleteModalState] = useState({
     isOpen: false,
     hotelId: undefined as string | undefined,
     hotelName: undefined as string | undefined,
   });
 
-  // Función para actualizar los hoteles después de crear o editar uno
+  // Function to update hotels after creating or editing one
   const handleHotelCreated = () => {
     refetch();
   };
 
-  // Función para abrir el modal de edición
+  // Function to open the edit hotel modal
   const handleEditHotel = (hotelId: string) => {
     setEditHotelId(hotelId);
   };
 
-  // Función para cerrar el modal de edición
+  // Function to close the edit hotel modal
   const handleCloseEditModal = () => {
     setEditHotelId(null);
   };
 
-  // Función para abrir el modal de eliminación
+  // Function to open the delete hotel modal
   const handleDeleteHotel = (hotel: HotelType) => {
     setDeleteModalState({
       isOpen: true,
@@ -95,7 +102,7 @@ export default function HotelsTable() {
     });
   };
 
-  // Función para cerrar el modal de eliminación
+  // Function to close the delete hotel modal
   const handleCloseDeleteModal = () => {
     setDeleteModalState({
       isOpen: false,
@@ -114,23 +121,23 @@ export default function HotelsTable() {
           </Button>
         </div>
 
-        {/* Componente de filtro */}
+        {/* Filter component */}
 
-        {/* Mostrar cargador mientras se obtienen los datos */}
+        {/* Show loader while loading data */}
         {isLoading && (
           <div className="flex justify-center items-center py-10">
             <Spinner size="lg" />
           </div>
         )}
 
-        {/* Mostrar mensaje de error si hay algún problema */}
+        {/* Show error message if there is a problem */}
         {isError && (
           <div className="text-center py-10 text-red-500">
             Error al cargar los hoteles: {error instanceof Error ? error.message : 'Error desconocido'}
           </div>
         )}
 
-        {/* Mostrar mensaje si no hay hoteles */}
+        {/* Show message if there are no hotels */}
         {!isLoading && !isError && hotels.length === 0 && (
           <div className="text-center py-10 text-gray-500">
             No has creado ningún hotel todavía. ¡Crea tu primer hotel con el botón &quot;Nuevo Hotel&quot;!
@@ -231,10 +238,10 @@ export default function HotelsTable() {
       <div className="md:w-3/4 w-full">
         <TableHotelsComponent />
 
-        {/* Modal para crear un nuevo hotel */}
+        {/* Modal to create a new hotel */}
         <HotelFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleHotelCreated} />
 
-        {/* Modal para editar un hotel existente */}
+        {/* Modal to edit an existing hotel */}
         <HotelFormModal
           isOpen={!!editHotelId}
           onClose={handleCloseEditModal}
@@ -242,7 +249,7 @@ export default function HotelsTable() {
           hotelId={editHotelId || undefined}
         />
 
-        {/* Modal para eliminar un hotel */}
+        {/* Modal to delete a hotel */}
         <HotelDeleteModal
           isOpen={deleteModalState.isOpen}
           onClose={handleCloseDeleteModal}
@@ -251,7 +258,7 @@ export default function HotelsTable() {
           hotelName={deleteModalState.hotelName}
         />
 
-        {/* Drawer para ver detalles del hotel */}
+        {/* Drawer to view hotel details */}
         <DrawerDetailHotel
           isOpen={detailDrawerState.isOpen}
           onClose={() => setDetailDrawerState({ isOpen: false, hotel: null })}

@@ -6,20 +6,17 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { useState } from 'react';
 import { FavoritesProvider } from '@/contexts/FavoritesContext';
 
+/**
+ * The top-level component that wraps the entire application.
+ *
+ * It provides the HeroUIProvider, NextThemesProvider, and FavoritesProvider.
+ * It also initializes a React Query client and wraps the app with it.
+ *
+ * @param children The children of the component.
+ * @returns The Providers component.
+ */
 export function Providers({ children }: { children: React.ReactNode }) {
-  // Crear una instancia de QueryClient para cada sesión del cliente
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        // defaultOptions: {
-        //   queries: {
-        //     refetchOnWindowFocus: false, // No consultar cuando la ventana recupera el foco
-        //     staleTime: 1000 * 60 * 5, // 5 minutos antes de considerar los datos obsoletos
-        //     retry: 1, // Solo intentar una vez si falla
-        //   },
-        // },
-      })
-  );
+  const [queryClient] = useState(() => new QueryClient({}));
 
   return (
     <QueryClientProvider client={queryClient}>

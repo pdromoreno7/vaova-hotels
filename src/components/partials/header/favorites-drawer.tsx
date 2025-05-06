@@ -1,16 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  DrawerFooter,
-  Button,
-  Avatar,
-  Chip,
-} from '@heroui/react';
+import { Drawer, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter, Button, Avatar, Chip } from '@heroui/react';
 import { Star, MapPin, Trash2 } from 'lucide-react';
 import { useFavorites } from '@/contexts/FavoritesContext';
 import Image from 'next/image';
@@ -22,6 +13,19 @@ interface FavoritesDrawerProps {
   onOpenChange: (isOpen: boolean) => void;
 }
 
+/**
+ * FavoritesDrawer component
+ * Displays a drawer containing a list of favorite hotels.
+ * Allows users to view details or remove hotels from favorites.
+ *
+ * Props:
+ * - isOpen: Determines if the drawer is open.
+ * - onOpenChange: Callback to handle changes in drawer open state.
+ *
+ * Uses the favorites context to manage favorite hotels.
+ *
+ * @returns A JSX element representing the favorites drawer.
+ */
 const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onOpenChange }) => {
   const { favorites, removeFavorite } = useFavorites();
   const { lang } = useParams();
@@ -48,10 +52,7 @@ const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({ isOpen, onOpenChange 
               ) : (
                 <div className="space-y-4">
                   {favorites.map((hotel) => (
-                    <div
-                      key={hotel.id}
-                      className="border rounded-xl overflow-hidden flex flex-col bg-gray-50"
-                    >
+                    <div key={hotel.id} className="border rounded-xl overflow-hidden flex flex-col bg-gray-50">
                       <div className="relative h-32 w-full">
                         <Image
                           src={

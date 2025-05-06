@@ -28,6 +28,16 @@ import { toast } from 'sonner';
 import { useSession } from '@/hooks/useSession';
 import { getDescriptionHotel } from '@/api/openAI';
 
+/**
+ * HotelFormModal is a modal that allows creating or editing a hotel.
+ *
+ * @param {HotelFormModalProps} props - Properties of the modal.
+ * @param {boolean} props.isOpen - Indicates if the modal is open.
+ * @param {function} props.onClose - Function that is called when the modal is closed.
+ * @param {function} props.onSuccess - Function that is called when the hotel is created or edited successfully.
+ * @param {string} props.hotelId - ID of the hotel to edit (optional).
+ * @returns {JSX.Element} - The HotelFormModal component.
+ */
 function HotelFormModal({
   isOpen,
   onClose,
@@ -39,34 +49,34 @@ function HotelFormModal({
   onSuccess?: () => void;
   hotelId?: string;
 }) {
-  // Estado para manejar las imágenes de la galería
+  // State to manage gallery images
   const [galleryFiles, setGalleryFiles] = useState<FileWithPreview[]>([]);
 
-  // Estado para almacenar las imágenes existentes (para edición)
+  // State to store existing images (for editing)
   const [existingGallery, setExistingGallery] = useState<GalleryImage[]>([]);
 
-  // Estado para manejar el logo
+  // State to manage the logo
   const [logoFile, setLogoFile] = useState<File | null>(null);
 
-  // URL del logo existente (para edición)
+  // State to store existing logo (for editing)
   const [existingLogo, setExistingLogo] = useState<string | null>(null);
 
-  // Estado para manejar la carga
+  // State to manage loading
   const [isLoading, setIsLoading] = useState(false);
 
-  // Estado para manejar la carga inicial de datos (para edición)
+  // State to manage initial data loading (for editing)
   const [isLoadingHotel, setIsLoadingHotel] = useState(false);
 
-  // Estado para manejar errores
+  // State to manage errors
   const [error, setError] = useState<string>('');
 
-  // Estado para manejar la generación de descripción con IA
+  // State to manage description generation with AI
   const [isLoadingDescription, setIsLoadingDescription] = useState(false);
 
-  // Determinar si estamos en modo edición
+  // Determine if we are in edit mode
   const isEditMode = !!hotelId;
 
-  // Obtener la sesión del usuario usando el hook
+  // Get user session using the hook
   const { session, isAuthenticated } = useSession();
   const { control, handleSubmit, watch, reset } = useForm<Partial<Hotel>>({
     defaultValues: {
@@ -87,10 +97,10 @@ function HotelFormModal({
     },
   });
 
-  // Watch para los checkboxes de habitaciones
+  // Watch for room checkboxes
   const watchRooms = watch('rooms');
 
-  // Verificar si los campos requeridos para generar la descripción están completos
+  // Verify if required fields for description generation are complete
   const isGenerateButtonEnabled = () => {
     const formValues = watch();
     return (
@@ -98,13 +108,13 @@ function HotelFormModal({
     );
   };
 
-  // Función para generar la descripción con IA
+  // Function to generate description with AI
   const handleGenerateDescription = async () => {
     try {
       const formValues = watch();
       setIsLoadingDescription(true);
 
-      // Construir la información para enviar a la IA
+      // Build the information to send to AI
       const hotelInfo = `
         Nombre: ${formValues.name},
         País: ${formValues.country},
@@ -113,12 +123,12 @@ function HotelFormModal({
         Categoría: ${formValues.category} estrellas
       `;
 
-      // Llamar a la API para generar la descripción
+      // Call the API to generate the description
       const result = await getDescriptionHotel(hotelInfo);
 
-      // Actualizar el campo de descripción con el resultado
+      // Update the description field with the result
       if (result?.recipe?.hotelDescription) {
-        // Actualizar el valor en el formulario
+        // Update the value in the form
         reset({
           ...formValues,
           description: result.recipe.hotelDescription,
@@ -134,7 +144,7 @@ function HotelFormModal({
     }
   };
 
-  // Cargar datos del hotel si estamos en modo edición
+  // Load hotel data if we are in edit mode
   useEffect(() => {
     const fetchHotelData = async () => {
       if (isEditMode && hotelId && isOpen) {
@@ -143,15 +153,15 @@ function HotelFormModal({
           const result = await getHotelById(hotelId);
 
           if (result.success && result.data) {
-            // Resetear el formulario con los datos del hotel
+            // Reset the form with the hotel data
             reset(result.data);
 
-            // Guardar las imágenes existentes
+            // Save existing images
             if (result.data.gallery && result.data.gallery.length > 0) {
               setExistingGallery(result.data.gallery);
             }
 
-            // Guardar el logo existente
+            // Save existing logo
             if (result.data.logo) {
               setExistingLogo(result.data.logo);
             }
@@ -171,7 +181,7 @@ function HotelFormModal({
     fetchHotelData();
   }, [hotelId, isOpen, isEditMode, reset]);
 
-  // Limpiar estados cuando se cierra el modal
+  // Clean states when the modal is closed
   useEffect(() => {
     if (!isOpen) {
       setGalleryFiles([]);
@@ -188,7 +198,7 @@ function HotelFormModal({
       setIsLoading(true);
       setError('');
 
-      // Verificar si el usuario está autenticado
+      // Verify if the user is authenticated
       if (!isAuthenticated || !session) {
         setError('Debes iniciar sesión para gestionar un hotel');
         toast.error('Debes iniciar sesión para gestionar un hotel');
@@ -196,17 +206,17 @@ function HotelFormModal({
         return;
       }
 
-      // Preparar los datos del hotel
+      // Prepare hotel data
       const hotelData: Partial<Hotel> = {
         ...data,
       };
 
-      // Solo agregar createdBy para nuevos hoteles
+      // Only add createdBy for new hotels
       if (!isEditMode) {
         hotelData.createdBy = session.id;
       }
 
-      // Incluir las imágenes existentes de la galería
+      // Include existing images from the gallery
       if (existingGallery.length > 0) {
         hotelData.gallery = existingGallery;
       }
@@ -214,7 +224,7 @@ function HotelFormModal({
       let result;
 
       if (isEditMode && hotelId) {
-        // Actualizar hotel existente
+        // Update existing hotel
         result = await updateHotel(hotelId, hotelData, galleryFiles, logoFile || undefined);
         if (result.success) {
           toast.success('¡Hotel actualizado exitosamente!');
@@ -445,13 +455,13 @@ function HotelFormModal({
                       )}
                     </div>
 
-                    {/* Mostrar error si existe */}
+                    {/* Show error if exists */}
                     {error && <div className="mt-4 p-3 text-sm text-red-600 bg-red-50 rounded-md">{error}</div>}
 
                     <div>
                       <h4 className="text-base font-medium mb-4">Tipos de Habitaciones Disponibles</h4>
                       <div className="space-y-6">
-                        {/* Habitación Sencilla (Single Room) */}
+                        {/*  (Single Room) */}
                         <div className="border rounded-lg p-4 bg-gray-50">
                           <Controller
                             name="rooms.singleRoom.enabled"
@@ -468,7 +478,7 @@ function HotelFormModal({
                             )}
                           />
 
-                          {/* Mostrar campos solo si está habilitado */}
+                          {/* Show fields only if enabled */}
                           <div
                             className={`mt-4 grid grid-cols-2 gap-4 ${
                               !watchRooms?.singleRoom?.enabled ? 'opacity-50 pointer-events-none' : ''
@@ -531,7 +541,7 @@ function HotelFormModal({
                             )}
                           />
 
-                          {/* Mostrar campos solo si está habilitado */}
+                          {/* Show fields only if enabled */}
                           <div
                             className={`mt-4 grid grid-cols-2 gap-4 ${
                               !watchRooms?.twinRoom?.enabled ? 'opacity-50 pointer-events-none' : ''
@@ -577,7 +587,7 @@ function HotelFormModal({
                           </div>
                         </div>
 
-                        {/* Un dormitorio de matrimonio (One Queen Bedroom) */}
+                        {/* One Queen Bedroom */}
                         <div className="border rounded-lg p-4 bg-gray-50">
                           <Controller
                             name="rooms.queenRoom.enabled"
@@ -594,7 +604,7 @@ function HotelFormModal({
                             )}
                           />
 
-                          {/* Mostrar campos solo si está habilitado */}
+                          {/* Show fields only if enabled */}
                           <div
                             className={`mt-4 grid grid-cols-2 gap-4 ${
                               !watchRooms?.queenRoom?.enabled ? 'opacity-50 pointer-events-none' : ''

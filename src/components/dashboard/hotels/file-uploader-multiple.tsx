@@ -15,10 +15,17 @@ interface FileUploaderMultipleProps {
   onFilesChange: (files: FileWithPreview[]) => void;
 }
 
+/**
+ * FileUploaderMultiple es un componente que permite subir varios archivos a la vez.
+ *
+ * @param {FileUploaderMultipleProps} props - Propiedades del componente.
+ * @param {function} props.onFilesChange - Función que se llamara cuando los archivos cambien.
+ * @returns {JSX.Element} - El componente FileUploaderMultiple.
+ */
 const FileUploaderMultiple = ({ onFilesChange }: FileUploaderMultipleProps) => {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
 
-  // Notificar al componente padre cuando los archivos cambian
+  // Notify the parent component when the files change
   useEffect(() => {
     onFilesChange(files);
   }, [files, onFilesChange]);
