@@ -19,23 +19,23 @@ export const saveUserSession = (userData: User) => {
  * @returns User object if found, null otherwise
  * @throws Error if JSON parsing fails (logged to console)
  */
-export const getUserSession = (): User | null => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
+// export const getUserSession = (): User | null => {
+//   if (typeof window === 'undefined') {
+//     return null;
+//   }
 
-  const userDataString = sessionStorage.getItem('userSession');
-  if (!userDataString) {
-    return null;
-  }
+//   const userDataString = sessionStorage.getItem('userSession');
+//   if (!userDataString) {
+//     return null;
+//   }
 
-  try {
-    return JSON.parse(userDataString) as User;
-  } catch (error) {
-    console.error('Error parsing user session:', error);
-    return null;
-  }
-};
+//   try {
+//     return JSON.parse(userDataString) as User;
+//   } catch (error) {
+//     console.error('Error parsing user session:', error);
+//     return null;
+//   }
+// };
 
 /**
  * Deletes user session data from sessionStorage
