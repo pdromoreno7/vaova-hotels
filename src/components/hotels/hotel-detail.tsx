@@ -5,7 +5,7 @@ import { DollarSign, MapPin, Star, User } from 'lucide-react';
 
 import { useState } from 'react';
 import { ScrollArea } from '../ui/scroll-area';
-import { AsyncStateRenderer } from '../common/AsyncStateRenderer';
+import { TemplateViewAsync } from '../common/template-view-async';
 
 interface HotelDetailProps {
   hotelId: string;
@@ -21,13 +21,14 @@ interface HotelDetailProps {
  *
  * @returns A JSX element with the full hotel details view.
  */
+//TODO: Add Skeleton in renderLoading
 export default function HotelDetail({ hotelId }: HotelDetailProps) {
   const { hotels, isLoading, isError } = useHotels('single', hotelId);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [guests, setGuests] = useState<string>('2');
 
   return (
-    <AsyncStateRenderer
+    <TemplateViewAsync
       isLoading={isLoading}
       isError={isError}
       data={hotels}
@@ -232,6 +233,6 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
           </div>
         );
       }}
-    </AsyncStateRenderer>
+    </TemplateViewAsync>
   );
 }

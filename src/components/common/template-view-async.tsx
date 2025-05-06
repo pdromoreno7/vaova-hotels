@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Spinner } from '@heroui/react';
 
-interface AsyncStateRendererProps<T> {
+interface TemplateViewAsyncProps<T> {
   isLoading: boolean;
   isError: boolean;
   data: T | null | undefined;
@@ -37,9 +37,9 @@ interface AsyncStateRendererProps<T> {
  * - If `isEmpty(data)` is true, it renders the empty state.
  * - Otherwise, it renders the `children` function with the data.
  *
- * @param {AsyncStateRendererProps<T>} props - The props for the AsyncStateRenderer component.
+ * @param {TemplateViewAsyncProps<T>} props - The props for the TemplateViewAsync component.
  */
-export function AsyncStateRenderer<T>({
+export function TemplateViewAsync<T>({
   isLoading,
   isError,
   data,
@@ -49,7 +49,7 @@ export function AsyncStateRenderer<T>({
   renderEmpty,
   isEmpty = (data) => !data || (Array.isArray(data) && data.length === 0),
   errorMessage = 'No se pudo cargar la información. Por favor, intenta más tarde.',
-}: AsyncStateRendererProps<T>) {
+}: TemplateViewAsyncProps<T>) {
   if (isLoading) {
     return renderLoading ? (
       renderLoading()
