@@ -35,10 +35,23 @@ function Header() {
     onOpen();
   };
 
-  const confirmLogout = () => {
-    clearSession();
-    onClose();
-    router.push(`/${lang}/auth/login`);
+  const confirmLogout = async () => {
+    try {
+      // Llamar a la función asíncrona de cierre de sesión
+      const result = await clearSession();
+      
+      if (result.success) {
+        onClose();
+        router.push(`/${lang}/auth/login`);
+      } else {
+        console.error('Error al cerrar sesión:', result.error);
+        // Cerrar el modal de todos modos para no bloquear al usuario
+        onClose();
+      }
+    } catch (error) {
+      console.error('Error inesperado al cerrar sesión:', error);
+      onClose();
+    }
   };
 
   useEffect(() => {

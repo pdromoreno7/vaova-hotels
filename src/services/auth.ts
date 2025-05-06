@@ -7,10 +7,11 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signOut
 } from 'firebase/auth';
 import { auth } from '@/config/firabase';
 import { createUserDocument, getUserDocument } from './user';
-import { saveUserSession } from '@/lib/session';
+import { saveUserSession, clearUserSession } from '@/lib/session';
 import { User } from '@/interface/user.interface';
 
 interface RegisterData {
@@ -103,8 +104,8 @@ export const loginWithGoogle = async () => {
 
     const userDoc = await getUserDocument(user.uid);
 
-    // Crear objeto userData con datos fusionados para asegurar que ID siempre existe
-    // y que todos los campos requeridos por la interfaz User estén presentes
+    // Create userData object with merged data to ensure that ID always exists
+    // and that all required fields of the User interface are present
     const userData: User = {
       id: user.uid,
       email: user.email || '',
@@ -137,23 +138,53 @@ export const loginWithEmailAndPassword = async (email: string, password: string)
 
     const userDoc = await getUserDocument(user.uid);
 
-    // Crear objeto userData con datos fusionados para asegurar que ID siempre existe
-    // y que todos los campos requeridos por la interfaz User estén presentes
+    // Create userData object with merged data to ensure that ID always exists
+    // and that all required fields of the User interface are present
     const userData: User = {
       id: user.uid,
       email: user.email || '',
       name: userDoc.success && userDoc.data?.name ? userDoc.data.name : user.displayName || email.split('@')[0],
       role: userDoc.success && userDoc.data?.role ? userDoc.data.role : 'user',
       createdAt: userDoc.success && userDoc.data?.createdAt ? userDoc.data.createdAt : new Date(),
-      // Otros campos opcionales
+
       ...(userDoc.success && userDoc.data ? userDoc.data : {}),
     };
 
-    // Save user session to localStorage and state
+    // Save user session to sessionStorage
     saveUserSession(userData);
     return { success: true, user: userData };
   } catch (error) {
     console.error('Error logging in with email and password:', error);
+    return { success: false, error };
+  }
+};
+
+/**
+ * Logs out the current user
+ * - Signs out from Firebase Auth
+ * - Clears session data from sessionStorage
+ * @returns Promise with success status or error
+ */
+export const logout = async () => {
+  try {
+    // Sign out from Firebase Auth
+    await signOut(auth);
+    
+    // Clear session data from sessionStorage
+    clearUserSession();
+    
+    // Check if Firebase stores anything in localStorage and clean it if needed
+    // Firebase typically stores auth state in indexedDB, but some configurations might use localStorage
+    const firebaseLocalStorageKeys = Object.keys(localStorage).filter(key => 
+      key.startsWith('firebase:') || key.includes('firebaseLocalStorageDb')
+    );
+    
+    // Remove any Firebase-related items from localStorage if they exist
+    firebaseLocalStorageKeys.forEach(key => localStorage.removeItem(key));
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error logging out:', error);
     return { success: false, error };
   }
 };
