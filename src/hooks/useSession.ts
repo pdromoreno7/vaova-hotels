@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User } from '@/interface/user.interface';
+import { logout } from '@/services/auth';
 
 /**
  * Custom hook for managing user session state.
@@ -34,9 +35,22 @@ export const useSession = () => {
     loadSession();
   }, []);
 
-  const clearSession = () => {
-    sessionStorage.removeItem('userSession');
-    setSession(null);
+  /**
+   * Clears the user session both from Firebase and sessionStorage
+   * @returns Promise that resolves when logout is complete
+   */
+  const clearSession = async () => {
+    try {
+      // Use the Firebase logout service to sign out and clean localStorage
+      await logout();
+      // Update local state and sessionStorage
+      sessionStorage.removeItem('userSession');
+      setSession(null);
+      return { success: true };
+    } catch (error) {
+      console.error('Error clearing session:', error);
+      return { success: false, error };
+    }
   };
 
   return {

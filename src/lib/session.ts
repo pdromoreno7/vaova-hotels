@@ -11,7 +11,9 @@ import { User } from '@/interface/user.interface';
  * @returns void
  */
 export const saveUserSession = (userData: User) => {
-  sessionStorage.setItem('userSession', JSON.stringify(userData));
+  if (typeof window !== 'undefined') {
+    sessionStorage.setItem('userSession', JSON.stringify(userData));
+  }
 };
 
 /**
@@ -19,28 +21,30 @@ export const saveUserSession = (userData: User) => {
  * @returns User object if found, null otherwise
  * @throws Error if JSON parsing fails (logged to console)
  */
-export const getUserSession = (): User | null => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
+// export const getUserSession = (): User | null => {
+//   if (typeof window === 'undefined') {
+//     return null;
+//   }
 
-  const userDataString = sessionStorage.getItem('userSession');
-  if (!userDataString) {
-    return null;
-  }
+//   const userDataString = sessionStorage.getItem('userSession');
+//   if (!userDataString) {
+//     return null;
+//   }
 
-  try {
-    return JSON.parse(userDataString) as User;
-  } catch (error) {
-    console.error('Error parsing user session:', error);
-    return null;
-  }
-};
+//   try {
+//     return JSON.parse(userDataString) as User;
+//   } catch (error) {
+//     console.error('Error parsing user session:', error);
+//     return null;
+//   }
+// };
 
 /**
  * Deletes user session data from sessionStorage
  * @returns void
  */
 export const clearUserSession = () => {
-  sessionStorage.removeItem('userSession');
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem('userSession');
+  }
 };
