@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
 } from 'firebase/auth';
 import { auth } from '@/config/firabase';
 import { createUserDocument, getUserDocument } from './user';
@@ -169,19 +169,21 @@ export const logout = async () => {
   try {
     // Sign out from Firebase Auth
     await signOut(auth);
-    
+
     // Clear session data from sessionStorage
     clearUserSession();
-    
+
     // Check if Firebase stores anything in localStorage and clean it if needed
     // Firebase typically stores auth state in indexedDB, but some configurations might use localStorage
-    const firebaseLocalStorageKeys = Object.keys(localStorage).filter(key => 
-      key.startsWith('firebase:') || key.includes('firebaseLocalStorageDb')
-    );
-    
-    // Remove any Firebase-related items from localStorage if they exist
-    firebaseLocalStorageKeys.forEach(key => localStorage.removeItem(key));
-    
+    if (typeof window !== 'undefined') {
+      const firebaseLocalStorageKeys = Object.keys(localStorage).filter(
+        (key) => key.startsWith('firebase:') || key.includes('firebaseLocalStorageDb')
+      );
+
+      // Remove any Firebase-related items from localStorage if they exist
+      firebaseLocalStorageKeys.forEach((key) => localStorage.removeItem(key));
+    }
+
     return { success: true };
   } catch (error) {
     console.error('Error logging out:', error);
