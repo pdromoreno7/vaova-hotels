@@ -19,6 +19,19 @@ interface IRegisterForm {
   role: 'admin' | 'user';
 }
 
+/**
+ * Register form component.
+ *
+ * This component uses `react-hook-form` to handle the form state and validate the fields.
+ * It also uses `next/router` to redirect the user to the dashboard once they have successfully registered.
+ *
+ * The form has four fields: `name`, `email`, `password`, and `role`. The `name` and `email` fields are required,
+ * the `password` field must have at least 6 characters, and the `role` field must be selected.
+ *
+ * The component also includes a button to register the user with Google.
+ *
+ * @returns A JSX element that represents the register form.
+ */
 export default function RegisterForm() {
   const { isLoading, isAuthenticated } = useSession();
   const { lang } = useParams();

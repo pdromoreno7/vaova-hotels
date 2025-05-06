@@ -5,13 +5,19 @@ import { Spinner } from '@heroui/react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
+/**
+ * HotelGrid component
+ * Fetches and displays a grid of all hotels.
+ * Handles loading and error states, and shows a message if no hotels are available.
+ *
+ * Uses the useHotels hook to retrieve hotel data.
+ *
+ * @returns A JSX element with a responsive grid of hotel cards.
+ */
 export default function HotelGrid() {
   const { lang } = useParams();
-  // Usamos el hook useHotels con 'all' para obtener todos los hoteles
   const { hotels, isLoading, isError, error } = useHotels('all');
-  console.log('🚀 ~ HotelGrid ~ hotels:', hotels);
 
-  // Mostrar estado de carga
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-40">
@@ -20,7 +26,6 @@ export default function HotelGrid() {
     );
   }
 
-  // Mostrar mensaje de error
   if (isError) {
     return (
       <div className="p-4 text-red-600 bg-red-50 rounded-md">
@@ -29,7 +34,6 @@ export default function HotelGrid() {
     );
   }
 
-  // Mostrar mensaje si no hay hoteles
   if (hotels.length === 0) {
     return (
       <div className="p-6 text-center text-gray-500 bg-gray-50 rounded-md">
