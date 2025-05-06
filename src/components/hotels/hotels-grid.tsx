@@ -4,6 +4,7 @@ import { useHotels } from '@/hooks/useHotels';
 import { Spinner } from '@heroui/react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { TemplateViewAsync } from '@/components/common/template-view-async';
 
 /**
  * HotelGrid component
@@ -14,45 +15,33 @@ import { useParams } from 'next/navigation';
  *
  * @returns A JSX element with a responsive grid of hotel cards.
  */
-
-//TODO: Add AsyncStateRenderer
+//TODO: Add Skeleton in renderLoading
 export default function HotelGrid() {
   const { lang } = useParams();
   const { hotels, isLoading, isError, error } = useHotels('all');
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-40">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="p-4 text-red-600 bg-red-50 rounded-md">
-        <p>Error al cargar los hoteles: {error?.toString()}</p>
-      </div>
-    );
-  }
-
-  if (hotels.length === 0) {
-    return (
-      <div className="p-6 text-center text-gray-500 bg-gray-50 rounded-md">
-        <p>No hay hoteles disponibles en este momento.</p>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {hotels.map((hotel) => (
-          <Link key={hotel.id} href={`/${lang}/hotels/${hotel.id}`}>
-            <HotelCard hotel={hotel} />
-          </Link>
-        ))}
-      </div>
-    </>
+    <TemplateViewAsync
+      isLoading={isLoading}
+      isError={isError}
+      data={hotels}
+      errorMessage={error?.toString()}
+      emptyMessage="No hay hoteles disponibles en este momento."
+      renderLoading={() => (
+        <div className="flex justify-center items-center h-40">
+          <Spinner size="lg" />
+        </div>
+      )}
+    >
+      {(data) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.map((hotel) => (
+            <Link key={hotel.id} href={`/${lang}/hotels/${hotel.id}`}>
+              <HotelCard hotel={hotel} />
+            </Link>
+          ))}
+        </div>
+      )}
+    </TemplateViewAsync>
   );
 }

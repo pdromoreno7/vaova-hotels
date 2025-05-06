@@ -12,6 +12,7 @@ interface TemplateViewAsyncProps<T> {
 
   isEmpty?: (data: T | null | undefined) => boolean;
   errorMessage?: string;
+  emptyMessage?: string;
 }
 
 /**
@@ -49,6 +50,7 @@ export function TemplateViewAsync<T>({
   renderEmpty,
   isEmpty = (data) => !data || (Array.isArray(data) && data.length === 0),
   errorMessage = 'No se pudo cargar la información. Por favor, intenta más tarde.',
+  emptyMessage = 'No hay información disponible.',
 }: TemplateViewAsyncProps<T>) {
   if (isLoading) {
     return renderLoading ? (
@@ -75,7 +77,7 @@ export function TemplateViewAsync<T>({
       renderEmpty()
     ) : (
       <div className="bg-gray-50 text-gray-600 p-4 rounded-md">
-        <p>No hay información disponible.</p>
+        <p>{emptyMessage}</p>
       </div>
     );
   }

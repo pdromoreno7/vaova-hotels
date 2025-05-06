@@ -52,8 +52,6 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
 
         return (
           <div className="space-y-8">
-            {/* Header */}
-
             {/* Gallery */}
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1 relative h-96 rounded-xl overflow-hidden">
