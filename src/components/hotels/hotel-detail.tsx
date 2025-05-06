@@ -11,6 +11,16 @@ interface HotelDetailProps {
   hotelId: string;
 }
 
+/**
+ * HotelDetail component
+ * Shows detailed information about a specific hotel, including gallery, amenities, description, and contact info.
+ * Allows users to interact with the hotel, such as adding to favorites or booking.
+ *
+ * Props:
+ * - hotelId: The unique identifier of the hotel to display details for.
+ *
+ * @returns A JSX element with the full hotel details view.
+ */
 export default function HotelDetail({ hotelId }: HotelDetailProps) {
   const { hotels, isLoading, isError } = useHotels('single', hotelId);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -31,22 +41,19 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
     >
       {(hotels) => {
         const hotel = hotels[0];
-
-        // Seleccionar la primera imagen de la galería o el logo como imagen principal si no hay seleccionada
         const mainImage =
           selectedImage ||
           (hotel.gallery?.length > 0
             ? hotel.gallery[0].url
             : 'https://st3.depositphotos.com/23594922/31822/v/450/depositphotos_318221368-stock-illustration-missing-picture-page-for-website.jpg');
 
-        // Formatear la ubicación completa
         const location = `${hotel.city}, ${hotel.state}, ${hotel.country}`;
 
         return (
           <div className="space-y-8">
-            {/* Encabezado del hotel */}
+            {/* Header */}
 
-            {/* Galería de imágenes */}
+            {/* Gallery */}
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1 relative h-96 rounded-xl overflow-hidden">
                 <Image isBlurred src={mainImage} alt={hotel.name} className="object-cover w-full h-full " />
@@ -77,9 +84,9 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
               </ScrollArea>
             </div>
 
-            {/* Sección principal de información */}
+            {/* Main information section */}
             <div className="flex flex-col md:flex-row gap-6">
-              {/* Columna izquierda: Título y descripción */}
+              {/* Left column: Title and description */}
               <div className="flex-1">
                 <div className="border-b border-gray-200 pb-4 mb-4">
                   <h1 className="text-3xl font-bold">{hotel.name}</h1>
@@ -108,9 +115,9 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
                 <p className="text-gray-600">{hotel.description}</p>
               </div>
 
-              {/* Columna derecha: Precio y habitaciones */}
+              {/* Right column: Price and rooms */}
               <div>
-                {/* Habitaciones disponibles */}
+                {/* Available rooms */}
                 <Card className="w-full md:w-[372px]">
                   <CardBody>
                     <h2 className="text-xl font-bold mb-4">Habitaciones disponibles</h2>
@@ -174,7 +181,7 @@ export default function HotelDetail({ hotelId }: HotelDetailProps) {
               </div>
             </div>
 
-            {/* Formulario de reserva */}
+            {/* Reservation form */}
             <div className="bg-white shadow-md rounded-xl p-6 mt-8">
               <div className="border-b pb-4 mb-6">
                 <h2 className="text-2xl font-bold">Reservar tu estancia</h2>

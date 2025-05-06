@@ -3,6 +3,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Hotel } from '@/interface/hotels.interface';
 
+/**
+ * Interface defining the shape of the Favorites context
+ */
 interface FavoritesContextProps {
   favorites: Hotel[];
   addFavorite: (hotel: Hotel) => void;
@@ -13,10 +16,14 @@ interface FavoritesContextProps {
 
 const FavoritesContext = createContext<FavoritesContextProps | undefined>(undefined);
 
+/**
+ * Provider component for favorites context
+ * Manages favorite hotels state and persists to localStorage
+ */
 export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [favorites, setFavorites] = useState<Hotel[]>([]);
 
-  // Cargar favoritos del localStorage al iniciar
+  // Load favorites from localStorage on initial render
   useEffect(() => {
     try {
       const storedFavorites = localStorage.getItem('favorites');
@@ -28,7 +35,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, []);
 
-  // Guardar favoritos en localStorage cuando cambien
+  // Save favorites to localStorage when they change
   useEffect(() => {
     try {
       localStorage.setItem('favorites', JSON.stringify(favorites));
@@ -40,7 +47,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const addFavorite = (hotel: Hotel) => {
     setFavorites((prev) => {
       if (prev.some((fav) => fav.id === hotel.id)) {
-        return prev; // El hotel ya está en favoritos
+        return prev; // Hotel is already in favorites
       }
       return [...prev, hotel];
     });
@@ -69,6 +76,9 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 };
 
+/**
+ * Hook to access the favorites context
+ */
 export const useFavorites = () => {
   const context = useContext(FavoritesContext);
   if (context === undefined) {

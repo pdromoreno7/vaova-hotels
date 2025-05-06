@@ -1,7 +1,16 @@
+/**
+ * User service module
+ * Handles user profile data operations
+ */
 import { db } from '@/config/firabase';
 import { User } from '@/interface/user.interface';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
+/**
+ * Fetches user document from Firestore
+ * @param userId - ID of the user to fetch
+ * @returns Promise with success status and user data or error
+ */
 export const getUserDocument = async (userId: string) => {
   try {
     const userDoc = await getDoc(doc(db, 'users', userId));
@@ -17,6 +26,12 @@ export const getUserDocument = async (userId: string) => {
   }
 };
 
+/**
+ * Creates a new user document in Firestore
+ * @param userId - ID of the user to create
+ * @param userData - User data to create
+ * @returns Promise with success status or error
+ */
 export const createUserDocument = async (userId: string, userData: Partial<User>) => {
   try {
     await setDoc(doc(db, 'users', userId), {

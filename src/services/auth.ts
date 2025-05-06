@@ -1,3 +1,7 @@
+/**
+ * Authentication service module
+ * Handles user authentication, registration, and session management
+ */
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,
@@ -16,6 +20,11 @@ interface RegisterData {
   role: 'admin' | 'user';
 }
 
+/**
+ * Registers a new user with email and password
+ * @param data - User registration data
+ * @returns Promise with success status and user data or error
+ */
 export const registerWithEmailAndPassword = async (data: RegisterData) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
@@ -45,6 +54,10 @@ export const registerWithEmailAndPassword = async (data: RegisterData) => {
   }
 };
 
+/**
+ * Handles Google authentication (login/registration)
+ * @returns Promise with success status and user data or error
+ */
 export const registerWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider();
@@ -78,6 +91,10 @@ export const registerWithGoogle = async () => {
   }
 };
 
+/**
+ * Handles Google authentication (login)
+ * @returns Promise with success status and user data or error
+ */
 export const loginWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider();
@@ -98,6 +115,7 @@ export const loginWithGoogle = async () => {
       ...(userDoc.success && userDoc.data ? userDoc.data : {}),
     };
 
+    // Save user session to localStorage and state
     saveUserSession(userData);
     return { success: true, user: userData };
   } catch (error) {
@@ -106,6 +124,12 @@ export const loginWithGoogle = async () => {
   }
 };
 
+/**
+ * Logs in a user with email and password
+ * @param email - User's email address
+ * @param password - User's password
+ * @returns Promise with success status and user data or error
+ */
 export const loginWithEmailAndPassword = async (email: string, password: string) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -125,6 +149,7 @@ export const loginWithEmailAndPassword = async (email: string, password: string)
       ...(userDoc.success && userDoc.data ? userDoc.data : {}),
     };
 
+    // Save user session to localStorage and state
     saveUserSession(userData);
     return { success: true, user: userData };
   } catch (error) {

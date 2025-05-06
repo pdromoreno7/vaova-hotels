@@ -16,6 +16,10 @@ interface ILoginForm {
   password: string;
 }
 
+/**
+ * LoginForm component
+ * Handles user login with email and password or Google
+ */
 export default function LoginForm() {
   const { isLoading, isAuthenticated } = useSession();
   const [loadingGoogle, setLoadingGoogle] = useState(false);
@@ -55,13 +59,17 @@ export default function LoginForm() {
     }
   };
 
+  /**
+   * Handles form submission for login
+   * @param data - Form data containing email and password
+   */
   const onSubmit = async (data: ILoginForm) => {
     try {
       const result = await loginWithEmailAndPassword(data.email, data.password);
       if (result.success) {
         toast.success('Inicio de sesión exitoso');
         console.log('Usuario inició sesión:', result.user);
-        // La sesión ya se guarda en sessionStorage en loginWithEmailAndPassword
+
         router.push(`/${lang}/dashboard`);
       } else {
         toast.error('Error al iniciar sesión');

@@ -1,25 +1,34 @@
 import { User } from '@/interface/user.interface';
 
 /**
- * Guarda la información del usuario en sessionStorage
+ * Session management utilities
+ * Handles storing and retrieving user session data in sessionStorage
+ */
+
+/**
+ * Saves user data to sessionStorage
+ * @param userData - User object containing session information
+ * @returns void
  */
 export const saveUserSession = (userData: User) => {
   sessionStorage.setItem('userSession', JSON.stringify(userData));
 };
 
 /**
- * Obtiene la información del usuario desde sessionStorage
+ * Retrieves user session data from sessionStorage
+ * @returns User object if found, null otherwise
+ * @throws Error if JSON parsing fails (logged to console)
  */
 export const getUserSession = (): User | null => {
   if (typeof window === 'undefined') {
     return null;
   }
-  
+
   const userDataString = sessionStorage.getItem('userSession');
   if (!userDataString) {
     return null;
   }
-  
+
   try {
     return JSON.parse(userDataString) as User;
   } catch (error) {
@@ -29,7 +38,8 @@ export const getUserSession = (): User | null => {
 };
 
 /**
- * Elimina la sesión del usuario
+ * Deletes user session data from sessionStorage
+ * @returns void
  */
 export const clearUserSession = () => {
   sessionStorage.removeItem('userSession');
