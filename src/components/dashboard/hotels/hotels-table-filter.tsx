@@ -4,7 +4,9 @@ import React, { useState } from 'react';
 import { Card, CardBody, Select, SelectItem, Button } from '@heroui/react';
 import { FilterIcon } from 'lucide-react';
 
-// Definición de tipos para los filtros
+/**
+ * Interface for hotel filters.
+ */
 export interface HotelFilters {
   category: string;
   status: string;
@@ -14,12 +16,19 @@ interface HotelsTableFilterProps {
   onFilter: (filters: HotelFilters) => void;
 }
 
+/**
+ * Component that displays a form to filter hotels by category and status.
+ *
+ * @param {Object} props - Component properties.
+ * @param {function} props.onFilter - Function that is called when filters are applied.
+ * @returns {JSX.Element} - The HotelsTableFilter component.
+ */
 export default function HotelsTableFilter({ onFilter }: HotelsTableFilterProps) {
-  // Estados para los filtros
+  // States for filters
   const [category, setCategory] = useState('all');
   const [status, setStatus] = useState('all');
 
-  // Función para aplicar los filtros
+  // Function to apply filters
   const handleApplyFilters = () => {
     onFilter({
       category,
@@ -27,7 +36,7 @@ export default function HotelsTableFilter({ onFilter }: HotelsTableFilterProps) 
     });
   };
 
-  // Función para restablecer los filtros
+  // Function to reset filters
   const handleResetFilters = () => {
     setCategory('all');
     setStatus('all');

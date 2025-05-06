@@ -14,6 +14,8 @@ import { useParams } from 'next/navigation';
  *
  * @returns A JSX element with a responsive grid of hotel cards.
  */
+
+//TODO: Add AsyncStateRenderer
 export default function HotelGrid() {
   const { lang } = useParams();
   const { hotels, isLoading, isError, error } = useHotels('all');

@@ -18,7 +18,6 @@ import Link from 'next/link';
 import { Hotel as HotelType, RoomInventory } from '@/interface/hotels.interface';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-// Extendemos la interfaz para campos opcionales que podríamos necesitar
 interface ExtendedHotelType extends Omit<HotelType, 'createdAt'> {
   phone?: string;
   email?: string;
@@ -126,13 +125,13 @@ export default function DrawerDetailHotel({ isOpen, onClose, hotel }: DrawerDeta
                     </div>
                   )}
 
-                  {/* Descripción */}
+                  {/* Description */}
                   <div className="flex flex-col mt-4 gap-2">
                     <h2 className="text-medium font-medium">Descripción</h2>
                     <p className="text-small text-default-600">{hotel.description}</p>
                   </div>
 
-                  {/* Tipos de habitaciones */}
+                  {/* Room Types */}
                   {hotel.rooms && (
                     <div className="flex flex-col mt-4 gap-2">
                       <h2 className="text-medium font-medium">Tipos de habitaciones</h2>
@@ -173,7 +172,7 @@ export default function DrawerDetailHotel({ isOpen, onClose, hotel }: DrawerDeta
                     </div>
                   )}
 
-                  {/* Información adicional */}
+                  {/* Additional Information */}
                   <div className="flex flex-col mt-4 gap-2">
                     <h2 className="text-medium font-medium">Información adicional</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -23,10 +23,8 @@ function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
 
-  // Drawer para favoritos
   const { isOpen: isFavoritesOpen, onOpen: onFavoritesOpen, onOpenChange: onFavoritesOpenChange } = useDisclosure();
 
-  // Obtener favoritos desde el contexto
   const { favoritesCount } = useFavorites();
 
   const toggleMenu = () => {
@@ -74,7 +72,6 @@ function Header() {
             <nav className="hidden items-center space-x-4 md:flex">
               {isAuthenticated ? (
                 <>
-                  {/* Botón de favoritos con contador */}
                   <button onClick={onFavoritesOpen} className="rounded-full relative">
                     <Heart className="h-6 w-6 text-gray-400 hover:text-black transition-colors" />
                     {favoritesCount > 0 && (
@@ -131,7 +128,6 @@ function Header() {
           <div className="flex flex-col space-y-4 pt-14">
             {isAuthenticated ? (
               <>
-                {/* Botón de favoritos para móvil */}
                 <Button
                   onPress={() => {
                     toggleMenu();
@@ -181,7 +177,6 @@ function Header() {
       </div>
       <LogoutModal isOpen={isOpen} onClose={onClose} onConfirm={confirmLogout} />
 
-      {/* Drawer de favoritos */}
       <FavoritesDrawer isOpen={isFavoritesOpen} onOpenChange={onFavoritesOpenChange} />
     </>
   );

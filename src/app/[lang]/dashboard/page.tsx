@@ -6,6 +6,14 @@ import { useSession } from '@/hooks/useSession';
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
+/**
+ * DashboardPage component
+ * Redirects unauthenticated users to the login page.
+ * Displays a loading state while authentication status is being checked.
+ * Once authenticated, it renders a dashboard with hotel management tools.
+ *
+ * @returns A JSX element representing the dashboard page.
+ */
 function DashboardPage() {
   const router = useRouter();
   const { lang } = useParams();
@@ -24,11 +32,6 @@ function DashboardPage() {
         <p className="text-lg text-gray-600">Cargando...</p>
       </div>
     );
-  }
-
-  // Si no está autenticado, no renderizamos nada mientras se realiza la redirección
-  if (!isAuthenticated) {
-    return null;
   }
 
   return (
