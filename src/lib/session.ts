@@ -11,9 +11,7 @@ import { User } from '@/interface/user.interface';
  * @returns void
  */
 export const saveUserSession = (userData: User) => {
-  if (typeof window !== 'undefined') {
-    sessionStorage.setItem('userSession', JSON.stringify(userData));
-  }
+  sessionStorage.setItem('userSession', JSON.stringify(userData));
 };
 
 /**
@@ -44,7 +42,5 @@ export const saveUserSession = (userData: User) => {
  * @returns void
  */
 export const clearUserSession = () => {
-  if (typeof window !== 'undefined') {
-    sessionStorage.removeItem('userSession');
-  }
+  sessionStorage.removeItem('userSession');
 };

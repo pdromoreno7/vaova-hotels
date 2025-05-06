@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect } from 'react';
 import { User } from '@/interface/user.interface';
 import { logout } from '@/services/auth';

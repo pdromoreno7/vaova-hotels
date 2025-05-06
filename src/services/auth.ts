@@ -11,7 +11,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '@/config/firabase';
 import { createUserDocument, getUserDocument } from './user';
-import { saveUserSession, clearUserSession } from '@/lib/session';
+import { saveUserSession } from '@/lib/session';
 import { User } from '@/interface/user.interface';
 
 interface RegisterData {
@@ -168,21 +168,7 @@ export const loginWithEmailAndPassword = async (email: string, password: string)
 export const logout = async () => {
   try {
     // Sign out from Firebase Auth
-    await signOut(auth);
-
-    // Clear session data from sessionStorage
-    clearUserSession();
-
-    // Check if Firebase stores anything in localStorage and clean it if needed
-    // Firebase typically stores auth state in indexedDB, but some configurations might use localStorage
-    if (typeof window !== 'undefined') {
-      const firebaseLocalStorageKeys = Object.keys(localStorage).filter(
-        (key) => key.startsWith('firebase:') || key.includes('firebaseLocalStorageDb')
-      );
-
-      // Remove any Firebase-related items from localStorage if they exist
-      firebaseLocalStorageKeys.forEach((key) => localStorage.removeItem(key));
-    }
+    await signOut(auth); // Clear session data from sessionStorage
 
     return { success: true };
   } catch (error) {
