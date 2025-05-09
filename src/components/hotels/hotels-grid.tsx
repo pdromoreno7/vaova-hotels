@@ -5,6 +5,7 @@ import { Spinner } from '@heroui/react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { TemplateViewAsync } from '@/components/common/template-view-async';
+import HotelInputSearch from './hoter-input-search';
 
 /**
  * HotelGrid component
@@ -18,13 +19,13 @@ import { TemplateViewAsync } from '@/components/common/template-view-async';
 //TODO: Add Skeleton in renderLoading
 export default function HotelGrid() {
   const { lang } = useParams();
-  const { hotels, isLoading, isError, error } = useHotels('all');
+  const { hotels, isLoading, isError, error, nameSearch, setNameSearch, hotelsSearch } = useHotels('all');
 
   return (
     <TemplateViewAsync
       isLoading={isLoading}
       isError={isError}
-      data={hotels}
+      data={nameSearch.length > 0 ? hotelsSearch : hotels}
       errorMessage={error?.toString()}
       emptyMessage="No hay hoteles disponibles en este momento."
       renderLoading={() => (
@@ -34,13 +35,18 @@ export default function HotelGrid() {
       )}
     >
       {(data) => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.map((hotel) => (
-            <Link key={hotel.id} href={`/${lang}/hotels/${hotel.id}`}>
-              <HotelCard hotel={hotel} />
-            </Link>
-          ))}
-        </div>
+        <>
+          <div className="my-6 h-16 w-full md:w-1/2">
+            <HotelInputSearch nameSearch={nameSearch} setNameSearch={setNameSearch} />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {data.map((hotel) => (
+              <Link key={hotel.id} href={`/${lang}/hotels/${hotel.id}`}>
+                <HotelCard hotel={hotel} />
+              </Link>
+            ))}
+          </div>
+        </>
       )}
     </TemplateViewAsync>
   );

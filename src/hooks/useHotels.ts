@@ -3,14 +3,17 @@ import { useQuery } from '@tanstack/react-query';
 import { getHotelsByUserId, getAllHotels, getHotelById } from '@/services/hotel';
 import { useSession } from './useSession';
 import { Hotel } from '@/interface/hotels.interface';
+import { useEffect, useState } from 'react';
 
 /**
  * Custom hook for fetching hotels data
  * @param queryType - Query type: 'user' for current user's hotels, 'all' for all hotels, 'single' for specific hotel
  * @param hotelId - Hotel ID when queryType is 'single'
  */
-export const useHotels = (queryType: 'user' | 'all' | 'single' = 'user', hotelId?: string) => {
+export const useHotels = (queryType: 'user' | 'all' | 'single' = 'user', hotelId?: string, name?: string) => {
+  const [nameSearch, setNameSearch] = useState(name || '');
   const { session, isAuthenticated } = useSession();
+  const [hotelsSearch, setHotelsSearch] = useState<Hotel[]>([]);
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     // The query key depends on the query type
@@ -66,6 +69,13 @@ export const useHotels = (queryType: 'user' | 'all' | 'single' = 'user', hotelId
     enabled: queryType === 'all' || queryType === 'single' || (isAuthenticated && !!session?.id),
   });
 
+  useEffect(() => {
+    if (data && nameSearch) {
+      const filteredHotels = data.filter((hotel) => hotel.name.toLowerCase().includes(nameSearch.toLowerCase()));
+      setHotelsSearch(filteredHotels);
+    }
+  }, [data, nameSearch]);
+
   return {
     hotels: (data || []) as Hotel[],
     isLoading,
@@ -73,5 +83,8 @@ export const useHotels = (queryType: 'user' | 'all' | 'single' = 'user', hotelId
     error,
     refetch,
     isAuthenticated,
+    setNameSearch,
+    nameSearch,
+    hotelsSearch,
   };
 };

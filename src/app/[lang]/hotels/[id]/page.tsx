@@ -4,10 +4,10 @@ import Wrapper from '@/layouts/Wrapper';
 import { useParams } from 'next/navigation';
 
 export default function HotelDetailPage() {
-  // Obtener el ID del hotel de los parámetros de la URL
+  // Get the hotel ID from the URL parameters
   const params = useParams();
   const hotelId = params.id as string;
-  
+
   return (
     <Wrapper>
       <div className="py-8">
