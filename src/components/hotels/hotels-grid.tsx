@@ -36,7 +36,7 @@ export default function HotelGrid() {
     >
       {(data) => (
         <>
-          <div className="my-6 h-16 w-1/2">
+          <div className="my-6 h-16 w-full md:w-1/2">
             <HotelInputSearch nameSearch={nameSearch} setNameSearch={setNameSearch} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
